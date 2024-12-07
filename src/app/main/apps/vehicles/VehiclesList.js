@@ -4,22 +4,26 @@ import Typography from '@material-ui/core/Typography';
 import { useMemo, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import VehiclesTable from './VehiclesTable';
-import { openEditContactDialog, selectVehicles } from './store/vehiclesSlice';
+import { 
+  //openEditContactDialog, 
+  selectVehicles } from './store/vehiclesSlice';
+import { Button, IconButton } from '@material-ui/core';
 
 const formatData = vehicles =>
   vehicles.map(vehicle => {
-    const totalCost = `$${(vehicle.serviceCost + vehicle.fuelCost).toLocaleString()}`;
+    // const totalCost = `$${(vehicle.serviceCost + vehicle.fuelCost).toLocaleString()}`;
     return {
       ...vehicle,
-      isAssigned: vehicle.isAssigned ? 'YES' : 'NO',
-      totalCost,
-      millage: vehicle.millage.toLocaleString()
+      // isAssigned: vehicle.isAssigned ? 'YES' : 'NO',
+      // totalCost,
+      // millage: vehicle.millage.toLocaleString()
     };
   });
 
 function VehiclesList(props) {
   const dispatch = useDispatch();
   const vehicles = useSelector(selectVehicles);
+  console.log(vehicles.action)
   const searchText = useSelector(({ vehiclesApp }) => vehiclesApp.vehicles.searchText);
   // const user = useSelector(({ vehiclesApp }) => vehiclesApp.user);
 
@@ -42,8 +46,8 @@ function VehiclesList(props) {
       //   sortable: false
       // },
       {
-        Header: 'Brand',
-        accessor: 'brand',
+        Header: 'Active',
+        accessor: 'active',
         className: 'font-medium',
         sortable: true
       },
@@ -61,29 +65,39 @@ function VehiclesList(props) {
       // },
       {
         Header: 'Plate Number',
-        accessor: 'plateNumber',
+        accessor: 'plate_number',
         sortable: true
       },
       {
-        Header: 'Assigned Status',
-        accessor: 'isAssigned',
+        Header: 'Engine number',
+        accessor: 'engine_number',
         sortable: true
       },
       {
-        Header: 'Vehicle Status',
-        accessor: 'vehicleStatus',
+        Header: 'Year',
+        accessor: 'manufacture_year',
         sortable: true
       },
       {
-        Header: 'Total Cost',
-        accessor: 'totalCost',
+        Header: 'Issues',
+        accessor: row => row.issues.length,
         sortable: true
       },
       {
-        Header: 'Millage',
-        accessor: 'millage',
-        sortable: true
-      }
+        Header: 'Actions',
+        accessor: 'actions',
+        sortable: true,
+        Cell: ({ row }) => (
+          <div className="flex gap-2">
+            <button className="px-4 py-2 bg-blue-500 text-white rounded" onClick={() => handleEdit(row.original)}>
+              Edit
+            </button>
+            <button className="px-4 py-2 bg-red-500 text-white rounded" onClick={() => handleDelete(row.original)}>
+              Delete
+            </button>
+          </div>
+        )
+      },
 
       // {
       //   id: 'action',
@@ -103,14 +117,14 @@ function VehiclesList(props) {
       //           <Icon>star_border</Icon>
       //         )}
       //       </IconButton>
-      //       {/* <IconButton
+      //       <IconButton
       //         onClick={ev => {
       //           ev.stopPropagation();
       //           dispatch(removeContact(row.original.id));
       //         }}
       //       >
       //         <Icon>delete</Icon>
-      //       </IconButton> */}
+      //       </IconButton>
       //     </div>
       //   )
       // }
@@ -118,6 +132,15 @@ function VehiclesList(props) {
     // eslint-disable-next-line
     [dispatch, vehicles]
   );
+
+  const handleEdit = rowData => {
+    console.log('Edit clicked for row:', rowData);
+    // Add logic to open a modal or navigate to an edit page
+  };
+  const handleDelete = rowData => {
+    console.log('Delete clicked for row:', rowData);
+    // Add logic to delete the row
+  };
 
   useEffect(() => {
     function getFilteredArray(entities, _searchText) {
@@ -149,17 +172,20 @@ function VehiclesList(props) {
   const formattedData = formatData(filteredData);
 
   return (
-    <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1, transition: { delay: 0.2 } }}>
-      <VehiclesTable
-        columns={columns}
-        data={formattedData}
-        // onRowClick={(ev, row) => {
-        //   if (row) {
-        //     dispatch(openEditContactDialog(row.original));
-        //   }
-        // }}
-      />
-    </motion.div>
+    <>
+    <Button style={{width: 200, backgroundColor: 'grey'}}>Add new</Button>
+      <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1, transition: { delay: 0.2 } }}>
+        <VehiclesTable
+          columns={columns}
+          data={formattedData}
+          // onRowClick={(ev, row) => {
+          //   if (row) {
+          //     dispatch(openEditContactDialog(row.original));
+          //   }
+          // }}
+        />
+      </motion.div>
+    </>
   );
 }
 
