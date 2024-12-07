@@ -9,9 +9,7 @@ import clsx from 'clsx';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import Auth0RegisterTab from './tabs/Auth0RegisterTab';
 import FirebaseRegisterTab from './tabs/FirebaseRegisterTab';
-import JWTRegisterTab from './tabs/JWTRegisterTab';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -57,13 +55,9 @@ function Register() {
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1, transition: { delay: 0.2 } }}>
               <div className="flex items-center justif-center mb-32">
                 {<img className="logo-icon w-53" src="assets/images/logos/image.png" alt="logo" />}
-                {/* <div className="border-l-1 mr-4 w-1 h-40" /> */}
               </div>
             </motion.div>
-
-            {selectedTab === 0 && <JWTRegisterTab />}
-            {selectedTab === 1 && <FirebaseRegisterTab />}
-            {selectedTab === 2 && <Auth0RegisterTab />}
+            <FirebaseRegisterTab />
           </CardContent>
 
           <div className="flex flex-col items-center justify-center pb-32">

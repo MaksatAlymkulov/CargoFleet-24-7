@@ -60,9 +60,7 @@ function Login() {
               </div>
             </motion.div>
 
-            {selectedTab === 0 && <JWTLoginTab />}
-            {selectedTab === 1 && <FirebaseLoginTab />}
-            {selectedTab === 2 && <Auth0LoginTab />}
+            <FirebaseLoginTab />
           </CardContent>
 
           <div className="flex flex-col items-center justify-center pb-32">
