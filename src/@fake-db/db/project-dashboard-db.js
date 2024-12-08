@@ -122,7 +122,20 @@ const projectDashboardAppDB = {
         },
         Total: {
           labels: {
-            formatter: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+            formatter: [
+              'January',
+              'February',
+              'March',
+              'April',
+              'May',
+              'June',
+              'July',
+              'August',
+              'September',
+              'October',
+              'November',
+              'December'
+            ],
             style: {
               fontSize: '16px',
               fontFamily: 'Helvetica, Arial, sans-serif'
@@ -151,7 +164,20 @@ const projectDashboardAppDB = {
             }
           },
           xaxis: {
-            categories: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+            categories: [
+              'January',
+              'February',
+              'March',
+              'April',
+              'May',
+              'June',
+              'July',
+              'August',
+              'September',
+              'October',
+              'November',
+              'December'
+            ],
             labels: {
               style: {
                 fontSize: '16px',

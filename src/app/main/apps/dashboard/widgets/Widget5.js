@@ -7,27 +7,44 @@ import Typography from '@material-ui/core/Typography';
 import _ from '@lodash';
 import { memo, useState, useEffect } from 'react';
 import ReactApexChart from 'react-apexcharts';
+import { useSelector } from 'react-redux';
+import { selectProjects } from '../store/projectsSlice';
 
 function Widget5(props) {
+  const dashboardData = useSelector(selectProjects);
   const theme = useTheme();
   const [awaitRender, setAwaitRender] = useState(true);
   const [tabValue, setTabValue] = useState(0);
   const widget = _.merge({}, props.widget);
+  
   const currentRange = Object.keys(widget.ranges)[tabValue];
 
   _.setWith(widget, 'mainChart.options.colors', [theme.palette.primary.main, theme.palette.secondary.main]);
+  const tripsData = dashboardData[3] || {};
 
   useEffect(() => {
     setAwaitRender(false);
+    if (!tripsData?.monthly_completed?.length) {
+      console.error('No data found in trips.monthly_completed');
+    }
   }, []);
 
   if (awaitRender) {
     return null;
   }
+
+  const monthlyCompletedData = tripsData?.monthly_completed || [];
+  widget.mainChart[currentRange].series = [
+    {
+      name: 'Trips Completed',
+      data: monthlyCompletedData
+    }
+  ];
+
   return (
     <Paper className="w-full rounded-20 shadow">
       <div className="flex items-center justify-between p-20">
-        <Typography className="text-16 font-medium">{widget.title}</Typography>
+        <Typography className="text-16 font-medium">Completed Trips Over the Past 12 Months</Typography>
         <Tabs
           value={tabValue}
           onChange={(ev, value) => setTabValue(value)}
@@ -41,9 +58,7 @@ function Widget5(props) {
             children: <Divider className="w-full h-full rounded-full opacity-50" />
           }}
         >
-          {Object.entries(widget.ranges).map(([key, n]) => (
-            <Tab className="text-14 font-semibold min-h-40 min-w-64 mx-4" disableRipple key={key} label={n} />
-          ))}
+          <Tab className="text-14 font-semibold min-h-40 min-w-64 mx-4" disableRipple label="Trips" />
         </Tabs>
       </div>
       <div className="w-full p-16 min-h-420 h-420">
@@ -54,36 +69,6 @@ function Widget5(props) {
           height={widget.mainChart.options.chart.height}
         />
       </div>
-      {/* <div className="flex flex-row flex-wrap">
-        <div className="w-full md:w-1/2 p-16 min-h-420 h-420">
-          <ReactApexChart
-            options={widget.mainChart.options}
-            series={widget.mainChart[currentRange].series}
-            type={widget.mainChart.options.chart.type}
-            height={widget.mainChart.options.chart.height}
-          />
-        </div>
-        <div className="flex w-full md:w-1/2 flex-wrap p-8">
-          {Object.entries(widget.supporting).map(([key, item]) => {
-            return (
-              <div key={key} className="w-full sm:w-1/2 p-12">
-                <Typography className="text-12 font-semibold whitespace-nowrap" color="textSecondary">
-                  {item.name}
-                </Typography>
-                <Typography className="text-32 font-semibold tracking-tighter">{item.count[currentRange]}</Typography>
-                <div className="h-64 w-full overflow-hidden">
-                  <ReactApexChart
-                    options={{ ...item.chart.options, colors: [theme.palette.secondary.main] }}
-                    series={item.chart[currentRange].series}
-                    type={item.chart.options.chart.type}
-                    height={item.chart.options.chart.height}
-                  />
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div> */}
     </Paper>
   );
 }
