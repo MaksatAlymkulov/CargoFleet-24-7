@@ -8,9 +8,12 @@ import Widget4 from '../widgets/Widget4';
 import Widget5 from '../widgets/Widget5';
 import Widget8 from '../widgets/Widget8';
 import Widget12 from '../widgets/Widget12';
+import { selectProjects } from '../store/projectsSlice';
 
 function HomeTab() {
   const widgets = useSelector(selectWidgets);
+
+  const dashboardData = useSelector(selectProjects);
 
   const container = {
     show: {
@@ -39,15 +42,15 @@ function HomeTab() {
       <motion.div variants={item} className="widget flex w-full sm:w-1/2 md:w-1/4 p-12">
         <Widget4 widget={widgets.widget4} />
       </motion.div>
-      <motion.div variants={item} className="widget flex w-full sm:w-1/2 p-12">
+      <motion.div variants={item} className="widget flex w-full  p-12">
         <Widget5 widget={widgets.widget5} />
       </motion.div>
-      <motion.div variants={item} className="widget flex w-full sm:w-1/2 p-12">
+      {/* <motion.div variants={item} className="widget flex w-full sm:w-1/2 p-12">
         <Widget8 widget={widgets.widget8} />
-      </motion.div>
-      <motion.div variants={item} className="widget flex w-full p-12">
+      </motion.div> */}
+      {/* <motion.div variants={item} className="widget flex w-full p-12">
         <Widget12 widget={widgets.widget12} />
-      </motion.div>
+      </motion.div> */}
     </motion.div>
   );
 }

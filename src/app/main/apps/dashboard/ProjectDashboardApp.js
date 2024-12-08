@@ -1,8 +1,6 @@
 import FusePageSimple from '@fuse/core/FusePageSimple';
 import Divider from '@material-ui/core/Divider';
 import { makeStyles } from '@material-ui/core/styles';
-import Tab from '@material-ui/core/Tab';
-import Tabs from '@material-ui/core/Tabs';
 import withReducer from 'app/store/withReducer';
 import _ from '@lodash';
 import { useEffect, useRef, useState } from 'react';
@@ -11,9 +9,7 @@ import ProjectDashboardAppHeader from './ProjectDashboardAppHeader';
 import ProjectDashboardAppSidebar from './ProjectDashboardAppSidebar';
 import reducer from './store';
 import { getWidgets, selectWidgets } from './store/widgetsSlice';
-import BudgetSummaryTab from './tabs/BudgetSummaryTab';
 import HomeTab from './tabs/HomeTab';
-import TeamMembersTab from './tabs/TeamMembersTab';
 
 const useStyles = makeStyles(theme => ({
   content: {
@@ -35,10 +31,6 @@ function ProjectDashboardApp(props) {
     dispatch(getWidgets());
   }, [dispatch]);
 
-  function handleChangeTab(event, value) {
-    setTabValue(value);
-  }
-
   if (_.isEmpty(widgets)) {
     return null;
   }
@@ -52,31 +44,9 @@ function ProjectDashboardApp(props) {
         content: classes.content
       }}
       header={<ProjectDashboardAppHeader pageLayout={pageLayout} />}
-      // contentToolbar={
-      //   <Tabs
-      //     value={tabValue}
-      //     onChange={handleChangeTab}
-      //     indicatorColor="secondary"
-      //     textColor="inherit"
-      //     variant="scrollable"
-      //     scrollButtons="off"
-      //     className="w-full px-24 -mx-4 min-h-40"
-      //     classes={{ indicator: 'flex justify-center bg-transparent w-full h-full' }}
-      //     TabIndicatorProps={{
-      //       children: <Divider className="w-full h-full rounded-full opacity-50" />
-      //     }}
-      //   >
-      //     <Tab className="text-14 font-semibold min-h-40 min-w-64 mx-4" disableRipple label="Home" />
-      //     <Tab className="text-14 font-semibold min-h-40 min-w-64 mx-4" disableRipple label="Budget Summary" />
-      //     <Tab className="text-14 font-semibold min-h-40 min-w-64 mx-4" disableRipple label="Team Members" />
-      //   </Tabs>
-      // }
       content={
         <div className="p-12 lg:ltr:pr-0 lg:rtl:pl-0">
           <HomeTab />
-          {/* {tabValue === 0 && <HomeTab />}
-          {tabValue === 1 && <BudgetSummaryTab />}
-          {tabValue === 2 && <TeamMembersTab />} */}
         </div>
       }
       rightSidebarContent={<ProjectDashboardAppSidebar />}
