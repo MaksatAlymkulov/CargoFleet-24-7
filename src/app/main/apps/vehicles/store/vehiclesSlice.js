@@ -1,16 +1,22 @@
 import { createSlice, createAsyncThunk, createEntityAdapter } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { getUserData } from './userSlice';
+import { Token } from 'prismjs';
+
+const TOKEN = 'Zb84MzAROCrhmF6t';
 
 export const getVehicles = createAsyncThunk(
   'vehicle-list-app/vehicles/getVehicles',
   async (routeParams, { getState }) => {
     routeParams = routeParams || getState().vehiclesApp.vehicles.routeParams;
-    const response = await axios.get('/api/vehicle-list-app/vehicles', {
-      params: routeParams
+    const response = await axios.get('https://cargofleet-api.fly.dev/team1/api/vehicles', {
+      params: routeParams,
+      headers: {
+        Authorization: TOKEN
+      }
     });
-    const data = await response.data;
-
+    const data = await response.data.data;
+    console.log(data);
     return { data, routeParams };
   }
 );
