@@ -4,16 +4,20 @@ import Typography from '@material-ui/core/Typography';
 import { useMemo, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import VehiclesTable from './VehiclesTable';
-import { 
-  //openEditContactDialog, 
-  selectVehicles } from './store/vehiclesSlice';
+import {
+  //openEditContactDialog,
+  openNewVehicleDialog,
+  openEditVehicleDialog,
+  selectVehicles,
+  removeVehicle
+} from './store/vehiclesSlice';
 import { Button, IconButton } from '@material-ui/core';
 
 const formatData = vehicles =>
   vehicles.map(vehicle => {
     // const totalCost = `$${(vehicle.serviceCost + vehicle.fuelCost).toLocaleString()}`;
     return {
-      ...vehicle,
+      ...vehicle
       // isAssigned: vehicle.isAssigned ? 'YES' : 'NO',
       // totalCost,
       // millage: vehicle.millage.toLocaleString()
@@ -23,7 +27,7 @@ const formatData = vehicles =>
 function VehiclesList(props) {
   const dispatch = useDispatch();
   const vehicles = useSelector(selectVehicles);
-  console.log(vehicles.action)
+
   const searchText = useSelector(({ vehiclesApp }) => vehiclesApp.vehicles.searchText);
   // const user = useSelector(({ vehiclesApp }) => vehiclesApp.user);
 
@@ -89,15 +93,21 @@ function VehiclesList(props) {
         sortable: true,
         Cell: ({ row }) => (
           <div className="flex gap-2">
-            <button className="px-4 py-2 bg-blue-500 text-white rounded" onClick={() => handleEdit(row.original)}>
+            <button
+              className="px-4 py-2 bg-blue-500 text-white rounded"
+              onClick={() => dispatch(openEditVehicleDialog(row.original))}
+            >
               Edit
             </button>
-            <button className="px-4 py-2 bg-red-500 text-white rounded" onClick={() => handleDelete(row.original)}>
+            <button
+              className="px-4 py-2 bg-red-500 text-white rounded"
+              onClick={() => dispatch(removeVehicle(row.original.id))}
+            >
               Delete
             </button>
           </div>
         )
-      },
+      }
 
       // {
       //   id: 'action',
@@ -173,7 +183,9 @@ function VehiclesList(props) {
 
   return (
     <>
-    <Button style={{width: 200, backgroundColor: 'grey'}}>Add new</Button>
+      <Button style={{ width: 200, backgroundColor: 'grey' }} onClick={() => dispatch(openNewVehicleDialog())}>
+        Add new
+      </Button>
       <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1, transition: { delay: 0.2 } }}>
         <VehiclesTable
           columns={columns}
