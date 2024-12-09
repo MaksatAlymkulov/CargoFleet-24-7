@@ -16,43 +16,31 @@ export const getVehicles = createAsyncThunk(
       }
     });
     const data = await response.data.data;
-    console.log(data);
+
     return { data, routeParams };
   }
 );
 
-// export const addVehicle = createAsyncThunk(
-//   'vehiclesApp/vehicles/addVehicle',
-//   async (vehicle, { dispatch, getState }) => {
-//     const response = await axios.post('/api/vehicles-app/add-vehicle', { vehicle });
-//     const data = await response.data;
+export const addVehicle = createAsyncThunk('vehiclesApp/vehicles/addVehicle', async vehicle => {
+  const response = await axios.post('https://cargofleet-api.fly.dev/team1/api/vehicles', vehicle, {
+    headers: { Authorization: TOKEN }
+  });
+  return response.data;
+});
 
-//     dispatch(getVehicles());
+export const updateVehicle = createAsyncThunk('vehiclesApp/vehicles/updateVehicle', async vehicle => {
+  const response = await axios.put(`https://cargofleet-api.fly.dev/team1/api/vehicles/${vehicle.id}`, vehicle, {
+    headers: { Authorization: TOKEN }
+  });
+  return response.data;
+});
 
-//     return data;
-//   }
-// );
-
-// export const updateVehicle = createAsyncThunk(
-//   'vehiclesApp/vehicles/updateVehicle',
-//   async (vehicle, { dispatch, getState }) => {
-//     const response = await axios.post('/api/vehicles-app/update-vehicle', { vehicle });
-//     const data = await response.data;
-
-//     dispatch(getVehicles());
-
-//     return data;
-//   }
-// );
-
-// export const removeVehicle = createAsyncThunk(
-//   'vehiclesApp/vehicles/removeVehicle',
-//   async (vehicleId, { dispatch, getState }) => {
-//     await axios.post('/api/vehicles-app/remove-vehicle', { vehicleId });
-
-//     return vehicleId;
-//   }
-// );
+export const removeVehicle = createAsyncThunk('vehiclesApp/vehicles/removeVehicle', async vehicleId => {
+  await axios.delete(`https://cargofleet-api.fly.dev/team1/api/vehicles/${vehicleId}`, {
+    headers: { Authorization: TOKEN }
+  });
+  return vehicleId;
+});
 
 // export const removeVehicles = createAsyncThunk(
 //   'vehiclesApp/vehicles/removeVehicles',
