@@ -3,6 +3,7 @@ import FuseUtils from '@fuse/utils';
 import Typography from '@material-ui/core/Typography';
 import { useMemo, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Button, IconButton } from '@material-ui/core';
 import VehiclesTable from './VehiclesTable';
 import {
   //openEditContactDialog,
@@ -11,7 +12,6 @@ import {
   selectVehicles,
   removeVehicle
 } from './store/vehiclesSlice';
-import { Button, IconButton } from '@material-ui/core';
 
 const formatData = vehicles =>
   vehicles.map(vehicle => {
@@ -94,12 +94,14 @@ function VehiclesList(props) {
         Cell: ({ row }) => (
           <div className="flex gap-2">
             <button
+              type="button"
               className="px-4 py-2 bg-blue-500 text-white rounded"
               onClick={() => dispatch(openEditVehicleDialog(row.original))}
             >
               Edit
             </button>
             <button
+              type="button"
               className="px-4 py-2 bg-red-500 text-white rounded"
               onClick={() => dispatch(removeVehicle(row.original.id))}
             >

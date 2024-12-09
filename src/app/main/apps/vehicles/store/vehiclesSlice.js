@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk, createEntityAdapter } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { getUserData } from './userSlice';
 import { Token } from 'prismjs';
+import { getUserData } from './userSlice';
 
 const TOKEN = 'Zb84MzAROCrhmF6t';
 
