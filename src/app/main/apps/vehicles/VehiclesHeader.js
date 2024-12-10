@@ -36,7 +36,7 @@ function VehiclesHeader(props) {
             animate={{ scale: 1, transition: { delay: 0.2 } }}
             className="text-24 md:text-32"
           >
-            account_box
+            local_shipping
           </Icon>
           <Typography
             component={motion.span}

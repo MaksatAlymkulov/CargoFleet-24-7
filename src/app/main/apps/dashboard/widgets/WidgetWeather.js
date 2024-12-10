@@ -15,9 +15,9 @@ function WidgetWeather(props) {
             {props.widget.locations[props.widget.currentLocation].name}
           </Typography>
         </div>
-        <IconButton aria-label="more">
+        {/* <IconButton aria-label="more">
           <Icon>more_vert</Icon>
-        </IconButton>
+        </IconButton> */}
       </div>
       <div className="flex items-center justify-center p-20 pb-32">
         <Icon className="meteocons text-40 ltr:mr-8 rtl:ml-8" color="action">

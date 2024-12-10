@@ -28,7 +28,7 @@ function Logo() {
 
   return (
     <div className={clsx(classes.root, 'flex items-center')}>
-      <img className="logo-icon w-30 h-24" src="assets/images/logos/logo.png" alt="logo" />
+      <img className="logo-icon w-30 h-24" src="https://cargofleet.org/assets/img/logo.png" alt="logo" />
     </div>
   );
 }
