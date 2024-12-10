@@ -56,40 +56,11 @@ function Login() {
           <CardContent className="flex flex-col items-center justify-center w-full max-w-320">
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1, transition: { delay: 0.2 } }}>
               <div className="flex items-center mb-48">
-                <img className="logo-icon w-48" src="assets/images/logos/fuse.svg" alt="logo" />
-                <div className="border-l-1 mr-4 w-1 h-40" />
-                <div>
-                  <Typography className="text-24 font-semibold logo-text" color="inherit">
-                    FUSE
-                  </Typography>
-                  <Typography className="text-16 tracking-widest -mt-8 font-700" color="textSecondary">
-                    REACT
-                  </Typography>
-                </div>
+                <img className="logo-icon w-53" src="assets/images/logos/image.png" alt="logo" />
               </div>
             </motion.div>
 
-            <Tabs value={selectedTab} onChange={handleTabChange} variant="fullWidth" className="w-full mb-32">
-              <Tab
-                icon={<img className="h-40 p-4 bg-black rounded-12" src="assets/images/logos/jwt.svg" alt="firebase" />}
-                className="min-w-0"
-                label="JWT"
-              />
-              <Tab
-                icon={<img className="h-40" src="assets/images/logos/firebase.svg" alt="firebase" />}
-                className="min-w-0"
-                label="Firebase"
-              />
-              <Tab
-                icon={<img className="h-40" src="assets/images/logos/auth0.svg" alt="auth0" />}
-                className="min-w-0"
-                label="Auth0"
-              />
-            </Tabs>
-
-            {selectedTab === 0 && <JWTLoginTab />}
-            {selectedTab === 1 && <FirebaseLoginTab />}
-            {selectedTab === 2 && <Auth0LoginTab />}
+            <FirebaseLoginTab />
           </CardContent>
 
           <div className="flex flex-col items-center justify-center pb-32">
@@ -110,13 +81,14 @@ function Login() {
             <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.2 } }}>
               <Typography variant="h3" color="inherit" className="font-semibold leading-tight">
                 Welcome <br />
-                to the <br /> FUSE React!
+                to the <br /> CargoFleet
               </Typography>
             </motion.div>
 
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1, transition: { delay: 0.3 } }}>
               <Typography variant="subtitle1" color="inherit" className="mt-32">
-                Powerful and professional admin template for Web Applications, CRM, CMS, Admin Panels and more.
+                All-in-one platform to organize documents, digitize large volumes of physical papers and automate
+                several workflow processes.
               </Typography>
             </motion.div>
           </div>
