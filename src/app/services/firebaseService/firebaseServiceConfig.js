@@ -1,5 +1,5 @@
 const prodConfig = {
-  apiKey: 'AIzaSyAc6w7Acwl8jEJQkNUwDVPsdCxMYMEejoc',
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain: 'cargo-fleet-production.firebaseapp.com',
   databaseURL: 'https://cargo-fleet-production-default-rtdb.firebaseio.com',
   projectId: 'cargo-fleet-production',
@@ -8,7 +8,7 @@ const prodConfig = {
   appId: '1:456009694195:web:575c8dffce6329808fb086'
 };
 const devConfig = {
-  apiKey: 'AIzaSyBPA8_qYWhy5CjEmBIky3COMNdFoKGGzaU',
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain: 'cargo-fleet-development.firebaseapp.com',
   databaseURL: 'https://cargo-fleet-development-default-rtdb.firebaseio.com',
   projectId: 'cargo-fleet-development',

@@ -5,7 +5,7 @@ import Icon from '@material-ui/core/Icon';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
 import { registerWithFirebase } from 'app/auth/store/registerSlice';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import * as yup from 'yup';
@@ -34,9 +34,7 @@ function FirebaseRegisterTab(props) {
   const dispatch = useDispatch();
   const authRegister = useSelector(({ auth }) => auth.register);
 
-  const [isFormValid, setIsFormValid] = useState(false);
-  const formRef = useRef(null);
-  const { control, formState, handleSubmit, reset, setError } = useForm({
+  const { control, formState, handleSubmit, setError } = useForm({
     mode: 'onChange',
     defaultValues,
     resolver: yupResolver(schema)

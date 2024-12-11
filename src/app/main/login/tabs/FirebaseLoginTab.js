@@ -3,7 +3,7 @@ import Button from '@material-ui/core/Button';
 import Icon from '@material-ui/core/Icon';
 import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
 import _ from '@lodash';
@@ -29,7 +29,7 @@ function FirebaseLoginTab(props) {
   const dispatch = useDispatch();
   const login = useSelector(({ auth }) => auth.login);
 
-  const { control, setValue, formState, handleSubmit, reset, trigger, setError } = useForm({
+  const { control, formState, handleSubmit, setError } = useForm({
     mode: 'onChange',
     defaultValues,
     resolver: yupResolver(schema)
@@ -38,8 +38,6 @@ function FirebaseLoginTab(props) {
   const { isValid, dirtyFields, errors } = formState;
 
   const [showPassword, setShowPassword] = useState(false);
-
-  const formRef = useRef(null);
 
   useEffect(() => {
     login.errors.forEach(error => {
