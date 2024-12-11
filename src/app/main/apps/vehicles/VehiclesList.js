@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button, IconButton } from '@material-ui/core';
 import VehiclesTable from './VehiclesTable';
 import {
-  //openEditContactDialog,
+  // openEditContactDialog,
   openNewVehicleDialog,
   openEditVehicleDialog,
   selectVehicles,
