@@ -54,7 +54,7 @@ function Register() {
           <CardContent className="flex flex-col items-center justify-center w-full max-w-320">
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1, transition: { delay: 0.2 } }}>
               <div className="flex items-center justif-center mb-32">
-                {<img className="logo-icon w-53" src="assets/images/logos/image.png" alt="logo" />}
+                <img className="logo-icon w-53" src="assets/images/logos/image.png" alt="logo" />
               </div>
             </motion.div>
             <FirebaseRegisterTab />
