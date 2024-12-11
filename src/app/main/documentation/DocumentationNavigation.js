@@ -186,23 +186,11 @@ const DocumentationNavigation = {
       icon: 'verified_user',
       children: [
         {
-          id: 'jwt-auth-doc',
-          title: 'JWT Authentication Service',
-          type: 'item',
-          url: '/documentation/authentication/jwt'
-        },
-        {
           id: 'firebase-auth-doc',
           title: 'Firebase Authentication Service',
           type: 'item',
 
           url: '/documentation/authentication/firebase'
-        },
-        {
-          id: 'auth0-auth-doc',
-          title: 'Auth0 Authentication Service',
-          type: 'item',
-          url: '/documentation/authentication/auth0'
         }
       ]
     },
