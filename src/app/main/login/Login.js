@@ -9,9 +9,7 @@ import clsx from 'clsx';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import Auth0LoginTab from './tabs/Auth0LoginTab';
 import FirebaseLoginTab from './tabs/FirebaseLoginTab';
-import JWTLoginTab from './tabs/JWTLoginTab';
 
 const useStyles = makeStyles(theme => ({
   root: {
