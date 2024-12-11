@@ -141,7 +141,7 @@
     "build-docs": "find ./src/app/main/documentation/material-ui-components \\( -name '*.ts' -o -name '*.tsx' \\) -type f -delete && babel-node --presets @babel/preset-env src/app/main/documentation/material-ui-components/build.js",
     "analyze": "craco build && source-map-explorer 'build/static/js/*.js' --html analyze-result.html",
     "pnpify-sdk": "yarn pnpify --sdk",
-    "lint": "eslint",
+    "lint": "eslint --fix --ext .js,.jsx .",
     "pretty": "prettier --write \"./**/*.{js,jsx,json}\""
   },
   "browserslist": {
