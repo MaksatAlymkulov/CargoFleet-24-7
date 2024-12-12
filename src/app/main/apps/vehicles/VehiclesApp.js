@@ -9,19 +9,20 @@ import VehiclesHeader from './VehiclesHeader';
 import VehiclesList from './VehiclesList';
 // import VehiclesSidebarContent from './VehiclesSidebarContent';
 import reducer from './store';
-import { getVehicles } from './store/vehiclesSlice';
+import { getVehicle, getVehicles } from './store/vehiclesSlice';
+import VehicleDetails from './VehicleDetails';
 // import { getUserData } from './store/userSlice';
 
 function VehiclesApp(props) {
   const dispatch = useDispatch();
-
   const pageLayout = useRef(null);
   const routeParams = useParams();
+  const { id } = routeParams;
 
   useDeepCompareEffect(() => {
     dispatch(getVehicles(routeParams));
-    // dispatch(getUserData());
-  }, [dispatch, routeParams]);
+    dispatch(getVehicle(id));
+  }, [dispatch, routeParams, id]);
 
   return (
     <>
@@ -34,7 +35,7 @@ function VehiclesApp(props) {
           wrapper: 'min-h-0'
         }}
         header={<VehiclesHeader pageLayout={pageLayout} />}
-        content={<VehiclesList />}
+        content={id === 'all' ? <VehiclesList /> : <VehicleDetails id={id} />}
         // leftSidebarContent={<VehiclesSidebarContent />}
         sidebarInner
         ref={pageLayout}

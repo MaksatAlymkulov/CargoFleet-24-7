@@ -119,7 +119,7 @@ const EnhancedTable = ({ columns, data, onRowClick }) => {
               return (
                 <TableRow
                   {...row.getRowProps()}
-                  // onClick={ev => onRowClick(ev, row)}
+                  onClick={ev => onRowClick(ev, row)}
                   className="truncate cursor-pointer"
                 >
                   {row.cells.map(cell => {
