@@ -1,7 +1,5 @@
 import { createSlice, createAsyncThunk, createEntityAdapter } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { Token } from 'prismjs';
-import { getUserData } from './userSlice';
 
 const TOKEN = 'Zb84MzAROCrhmF6t';
 
@@ -20,6 +18,15 @@ export const getVehicles = createAsyncThunk(
     return { data, routeParams };
   }
 );
+
+export const getVehicle = createAsyncThunk('vehicle-list-app/vehicles/getVehicle', async vehicleId => {
+  const response = await axios.get(`https://cargofleet-api.fly.dev/team1/api/vehicles/${vehicleId}`, {
+    headers: {
+      Authorization: TOKEN
+    }
+  });
+  return response.data;
+});
 
 export const addVehicle = createAsyncThunk('vehiclesApp/vehicles/addVehicle', async vehicle => {
   const response = await axios.post('https://cargofleet-api.fly.dev/team1/api/vehicles', vehicle, {
@@ -109,6 +116,8 @@ export const removeVehicle = createAsyncThunk('vehiclesApp/vehicles/removeVehicl
 
 const vehiclesAdapter = createEntityAdapter({});
 
+console.log(vehiclesAdapter.getSelectors(state => state.vehiclesApp.vehicles));
+
 export const { selectAll: selectVehicles, selectById: selectVehiclesById } = vehiclesAdapter.getSelectors(
   state => state.vehiclesApp.vehicles
 );
@@ -180,6 +189,10 @@ const vehiclesSlice = createSlice({
       vehiclesAdapter.setAll(state, data);
       state.routeParams = routeParams;
       state.searchText = '';
+    },
+    [getVehicle.fulfilled]: (state, action) => {
+      const vehicle = action.payload;
+      vehiclesAdapter.upsertOne(state, vehicle);
     }
   }
 });

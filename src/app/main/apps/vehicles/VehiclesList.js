@@ -1,3 +1,4 @@
+import { useHistory } from 'react-router';
 import { motion } from 'framer-motion';
 import FuseUtils from '@fuse/utils';
 import Typography from '@material-ui/core/Typography';
@@ -21,6 +22,7 @@ const formatData = vehicles =>
   });
 
 function VehiclesList(props) {
+  const history = useHistory();
   const dispatch = useDispatch();
   const vehicles = useSelector(selectVehicles);
 
@@ -114,6 +116,11 @@ function VehiclesList(props) {
     }
   }, [vehicles, searchText]);
 
+  const handleRowClick = (event, row) => {
+    const vehicleId = row.original.id;
+    history.push(`/apps/vehicles/${vehicleId}`);
+  };
+
   if (!filteredData) {
     return null;
   }
@@ -139,6 +146,7 @@ function VehiclesList(props) {
         <VehiclesTable
           columns={columns}
           data={formattedData}
+          onRowClick={handleRowClick}
           // onRowClick={(ev, row) => {
           //   if (row) {
           //     dispatch(openEditContactDialog(row.original));
