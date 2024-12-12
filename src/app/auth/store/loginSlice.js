@@ -57,7 +57,7 @@ const loginSlice = createSlice({
   name: 'auth/login',
   initialState,
   reducers: {
-    loginSuccess: (state, action) => {
+    loginSuccess: state => {
       state.success = true;
       state.errors = [];
     },
@@ -65,8 +65,7 @@ const loginSlice = createSlice({
       state.success = false;
       state.errors = action.payload;
     }
-  },
-  extraReducers: {}
+  }
 });
 
 export const { loginSuccess, loginError } = loginSlice.actions;

@@ -118,7 +118,7 @@ export const logoutUser = () => async (dispatch, getState) => {
   return dispatch(userLoggedOut());
 };
 
-export const updateUserData = user => async (dispatch, getState) => {
+export const updateUserData = user => async dispatch => {
   if (!user.role || user.role.length === 0) {
     // is guest
     return;
