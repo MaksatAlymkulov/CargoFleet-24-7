@@ -4,25 +4,21 @@ import { useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { useDeepCompareEffect } from '@fuse/hooks';
-import VehicleDialog from './VehicleDialog';
-import VehiclesHeader from './VehiclesHeader';
-import VehiclesList from './VehiclesList';
-// import VehiclesSidebarContent from './VehiclesSidebarContent';
+import DriverDialog from './DriverDialog';
+import DriversHeader from './DriversHeader';
+import DriversList from './DriversList';
 import reducer from './store';
-import { getVehicle, getVehicles } from './store/vehiclesSlice';
-import VehicleDetails from './VehicleDetails';
-// import { getUserData } from './store/userSlice';
+import { getDrivers } from './store/driversSlice';
 
-function VehiclesApp(props) {
+function DriversApp(props) {
   const dispatch = useDispatch();
+
   const pageLayout = useRef(null);
   const routeParams = useParams();
-  const { id } = routeParams;
 
   useDeepCompareEffect(() => {
-    dispatch(getVehicles(routeParams));
-    dispatch(getVehicle(id));
-  }, [dispatch, routeParams, id]);
+    dispatch(getDrivers(routeParams));
+  }, [dispatch, routeParams]);
 
   return (
     <>
@@ -34,16 +30,15 @@ function VehiclesApp(props) {
           header: 'min-h-72 h-72 sm:h-136 sm:min-h-136',
           wrapper: 'min-h-0'
         }}
-        header={<VehiclesHeader pageLayout={pageLayout} />}
-        content={id === 'all' ? <VehiclesList /> : <VehicleDetails id={id} />}
-        // leftSidebarContent={<VehiclesSidebarContent />}
+        header={<DriversHeader pageLayout={pageLayout} />}
+        content={<DriversList />}
         sidebarInner
         ref={pageLayout}
         innerScroll
       />
-      <VehicleDialog />
+      <DriverDialog />
     </>
   );
 }
 
-export default withReducer('vehiclesApp', reducer)(VehiclesApp);
+export default withReducer('driversApp', reducer)(DriversApp);

@@ -9,6 +9,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import Icon from '@material-ui/core/Icon';
 import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
+import MenuItem from '@material-ui/core/MenuItem';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { useCallback, useEffect } from 'react';
@@ -23,7 +24,8 @@ import {
   updateVehicle,
   addVehicle,
   closeNewVehicleDialog,
-  closeEditVehicleDialog
+  closeEditVehicleDialog,
+  getVehicles
 } from './store/vehiclesSlice';
 
 const defaultValues = {
@@ -42,8 +44,14 @@ const schema = yup.object().shape({
   model: yup.string().required('You must enter a model'),
   plate_number: yup.string().required('You must enter a plate number'),
   engine_number: yup.string().required('You must enter an engine number'),
-  manufacture_year: yup.string().required('You must enter a manufacture year'),
-  fuel_type: yup.string().required('You must enter a fuel type'),
+  manufacture_year: yup
+    .date()
+    .required('You must enter a manufacture year')
+    .typeError('Invalid date format, use YYYY-MM-DD'),
+  fuel_type: yup
+    .string()
+    .required('You must select a fuel type')
+    .oneOf(['gasoline', 'propane', 'diesel', 'natural_gas'], 'Invalid fuel type'),
   image_url: yup.string().required('You must enter an image URL').url('Must be a valid URL')
 });
 
@@ -61,7 +69,6 @@ function VehicleDialog(props) {
 
   const id = watch('id');
   const model = watch('model');
-  //   const avatar = watch('image_url');
 
   /**
    * Initialize Dialog with Data
@@ -107,9 +114,9 @@ function VehicleDialog(props) {
    */
   function onSubmit(data) {
     if (vehicleDialog.type === 'new') {
-      dispatch(addVehicle(data));
+      dispatch(addVehicle(data)).then(() => dispatch(getVehicles()));
     } else {
-      dispatch(updateVehicle({ ...vehicleDialog.data, ...data }));
+      dispatch(updateVehicle({ ...vehicleDialog.data, ...data })).then(() => dispatch(getVehicles()));
     }
     closeComposeDialog();
   }
@@ -118,7 +125,7 @@ function VehicleDialog(props) {
    * Remove Event
    */
   function handleRemove() {
-    dispatch(removeVehicle(id));
+    dispatch(removeVehicle(id)).then(() => dispatch(getVehicles()));
     closeComposeDialog();
   }
 
@@ -215,9 +222,11 @@ function VehicleDialog(props) {
               render={({ field }) => (
                 <TextField
                   {...field}
+                  type="date"
                   className="mb-24"
                   label="Manufacture Year"
                   id="manufacture_year"
+                  InputLabelProps={{ shrink: true }}
                   error={!!errors.manufacture_year}
                   helperText={errors?.manufacture_year?.message}
                   variant="outlined"
@@ -234,6 +243,7 @@ function VehicleDialog(props) {
               render={({ field }) => (
                 <TextField
                   {...field}
+                  select
                   className="mb-24"
                   label="Fuel Type"
                   id="fuel_type"
@@ -242,7 +252,12 @@ function VehicleDialog(props) {
                   variant="outlined"
                   required
                   fullWidth
-                />
+                >
+                  <MenuItem value="gasoline">Gasoline</MenuItem>
+                  <MenuItem value="propane">Propane</MenuItem>
+                  <MenuItem value="diesel">Diesel</MenuItem>
+                  <MenuItem value="natural_gas">Natural Gas</MenuItem>
+                </TextField>
               )}
             />
           </div>

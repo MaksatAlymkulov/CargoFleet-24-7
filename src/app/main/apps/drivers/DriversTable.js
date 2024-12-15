@@ -1,5 +1,3 @@
-import { forwardRef, useRef, useEffect } from 'react';
-import Checkbox from '@material-ui/core/Checkbox';
 import Table from '@material-ui/core/Table';
 import PropTypes from 'prop-types';
 import TableBody from '@material-ui/core/TableBody';
@@ -9,9 +7,9 @@ import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
-import { useGlobalFilter, usePagination, useRowSelect, useSortBy, useTable } from 'react-table';
+import { useGlobalFilter, usePagination, useSortBy, useTable } from 'react-table';
 import clsx from 'clsx';
-import ContactsTablePaginationActions from './VehiclesTablePaginationActions';
+import DriversTablePaginationActions from './DriversTablePaginationActions';
 
 const EnhancedTable = ({ columns, data, onRowClick }) => {
   const {
@@ -30,8 +28,7 @@ const EnhancedTable = ({ columns, data, onRowClick }) => {
     },
     useGlobalFilter,
     useSortBy,
-    usePagination,
-    useRowSelect,
+    usePagination
   );
 
   const handleChangePage = (event, newPage) => {
@@ -42,7 +39,6 @@ const EnhancedTable = ({ columns, data, onRowClick }) => {
     setPageSize(Number(event.target.value));
   };
 
-  // Render the UI for your table
   return (
     <div className="flex flex-col min-h-full sm:border-1 sm:rounded-16 overflow-hidden">
       <TableContainer className="flex flex-1">
@@ -59,11 +55,7 @@ const EnhancedTable = ({ columns, data, onRowClick }) => {
                   >
                     {column.render('Header')}
                     {column.sortable ? (
-                      <TableSortLabel
-                        active={column.isSorted}
-                        // react-table has a unsorted state which is not treated here
-                        direction={column.isSortedDesc ? 'desc' : 'asc'}
-                      />
+                      <TableSortLabel active={column.isSorted} direction={column.isSortedDesc ? 'desc' : 'asc'} />
                     ) : null}
                   </TableCell>
                 ))}
@@ -74,11 +66,7 @@ const EnhancedTable = ({ columns, data, onRowClick }) => {
             {page.map((row, i) => {
               prepareRow(row);
               return (
-                <TableRow
-                  {...row.getRowProps()}
-                  onClick={ev => onRowClick(ev, row)}
-                  className="truncate cursor-pointer"
-                >
+                <TableRow {...row.getRowProps()} className="truncate cursor-pointer">
                   {row.cells.map(cell => {
                     return (
                       <TableCell {...cell.getCellProps()} className={clsx('p-4 md:p-12', cell.column.className)}>
@@ -108,7 +96,7 @@ const EnhancedTable = ({ columns, data, onRowClick }) => {
         }}
         onChangePage={handleChangePage}
         onChangeRowsPerPage={handleChangeRowsPerPage}
-        ActionsComponent={ContactsTablePaginationActions}
+        ActionsComponent={DriversTablePaginationActions}
       />
     </div>
   );

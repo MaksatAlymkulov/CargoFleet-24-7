@@ -16,6 +16,7 @@ function Widget5(props) {
   const [awaitRender, setAwaitRender] = useState(true);
   const [tabValue, setTabValue] = useState(0);
   const widget = _.merge({}, props.widget);
+
   const currentRange = Object.keys(widget.ranges)[tabValue];
 
   _.setWith(widget, 'mainChart.options.colors', [theme.palette.primary.main, theme.palette.secondary.main]);
