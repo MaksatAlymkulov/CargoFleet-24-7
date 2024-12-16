@@ -4,7 +4,7 @@ import FuseUtils from '@fuse/utils';
 import Typography from '@material-ui/core/Typography';
 import { useMemo, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, IconButton } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import VehiclesTable from './VehiclesTable';
 import {
   // openEditContactDialog,
@@ -38,7 +38,7 @@ function VehiclesList(props) {
         className: 'font-medium',
         sortable: true,
         Cell: ({ row }) => {
-          return row.original.active ? "True" : "False";
+          return row.original.active ? 'True' : 'False';
         }
       },
       {
@@ -117,6 +117,9 @@ function VehiclesList(props) {
   }, [vehicles, searchText]);
 
   const handleRowClick = (event, row) => {
+    if (event.target.closest('button')) {
+      return;
+    }
     const vehicleId = row.original.id;
     history.push(`/apps/vehicles/${vehicleId}`);
   };

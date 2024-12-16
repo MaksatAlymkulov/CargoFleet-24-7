@@ -1,5 +1,6 @@
 import { authRoles } from 'app/auth';
 import Login from './Login';
+import ForgotPassword from './ForgotPassword';
 
 const LoginConfig = {
   settings: {
@@ -28,6 +29,10 @@ const LoginConfig = {
     {
       path: '/login',
       component: Login
+    },
+    {
+      path: '/reset',
+      component: ForgotPassword
     }
   ]
 };

@@ -48,8 +48,25 @@ export const submitLoginWithFireBase =
       });
   };
 
+export const resetPassword = email => async dispatch => {
+  if (!firebaseService.auth) {
+    console.warn("Firebase Service didn't initialize, check your configuration");
+    return () => false;
+  }
+
+  return firebaseService.auth
+    .sendPasswordResetEmail(email)
+    .then(() => {
+      return dispatch(resetPasswordSuccess(`Reset link sent to ${email}`));
+    })
+    .catch(error => {
+      return dispatch(resetPasswordError(error.message));
+    });
+};
+
 const initialState = {
   success: false,
+  message: null,
   errors: []
 };
 
@@ -64,10 +81,22 @@ const loginSlice = createSlice({
     loginError: (state, action) => {
       state.success = false;
       state.errors = action.payload;
+    },
+    resetPasswordSuccess: (state, action) => {
+      state.success = true;
+      state.message = action.payload;
+    },
+    resetPasswordError: (state, action) => {
+      state.success = false;
+      state.message = action.payload;
+    },
+    clearMessage: state => {
+      state.message = null;
+      state.success = false;
     }
   }
 });
 
-export const { loginSuccess, loginError } = loginSlice.actions;
+export const { loginSuccess, loginError, resetPasswordSuccess, resetPasswordError, clearMessage } = loginSlice.actions;
 
 export default loginSlice.reducer;
