@@ -6,7 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import clsx from 'clsx';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import FirebaseLoginTab from './tabs/FirebaseLoginTab';
+import ForgotPasswordTab from './tabs/ForgotPasswordTab';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -26,7 +26,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-function Login() {
+function ForgotPassword() {
   const classes = useStyles();
 
   return (
@@ -49,11 +49,7 @@ function Login() {
               </div>
             </motion.div>
 
-            <FirebaseLoginTab />
-            <br />
-            <Link className="font-normal" to="/reset">
-              Forgot Password?
-            </Link>
+            <ForgotPasswordTab />
           </CardContent>
 
           <div className="flex flex-col items-center justify-center pb-32">
@@ -91,4 +87,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default ForgotPassword;
