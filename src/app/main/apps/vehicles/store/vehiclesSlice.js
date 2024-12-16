@@ -180,8 +180,12 @@ const vehiclesSlice = createSlice({
     }
   },
   extraReducers: {
-    [updateVehicle.fulfilled]: vehiclesAdapter.upsertOne,
+
+    [updateVehicle.fulfilled]: (state, action) => vehiclesAdapter.upsertOne(state, action.payload),
+    // [addVehicle.fulfilled]: vehiclesAdapter.addOne,
+
     [addVehicle.fulfilled]: vehiclesAdapter.addOne,
+
     // [removeVehicles.fulfilled]: (state, action) => vehiclesAdapter.removeMany(state, action.payload),
     [removeVehicle.fulfilled]: (state, action) => vehiclesAdapter.removeOne(state, action.payload),
     [getVehicles.fulfilled]: (state, action) => {

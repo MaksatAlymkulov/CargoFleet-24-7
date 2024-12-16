@@ -21,19 +21,16 @@ function Widget5(props) {
 
   _.setWith(widget, 'mainChart.options.colors', [theme.palette.primary.main, theme.palette.secondary.main]);
   const tripsData = dashboardData[3] || {};
+  const monthlyCompletedData = tripsData?.monthly_completed || [];
 
   useEffect(() => {
     setAwaitRender(false);
-    if (!tripsData?.monthly_completed?.length) {
-      console.error('No data found in trips.monthly_completed');
-    }
   }, []);
 
   if (awaitRender) {
     return null;
   }
 
-  const monthlyCompletedData = tripsData?.monthly_completed || [];
   widget.mainChart[currentRange].series = [
     {
       name: 'Trips Completed',
