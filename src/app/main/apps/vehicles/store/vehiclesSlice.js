@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, createEntityAdapter } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, createEntityAdapter, isRejectedWithValue } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 const TOKEN = 'Zb84MzAROCrhmF6t';
@@ -42,12 +42,19 @@ export const updateVehicle = createAsyncThunk('vehiclesApp/vehicles/updateVehicl
   return response.data;
 });
 
-export const removeVehicle = createAsyncThunk('vehiclesApp/vehicles/removeVehicle', async vehicleId => {
-  await axios.delete(`https://cargofleet-api.fly.dev/team1/api/vehicles/${vehicleId}`, {
-    headers: { Authorization: TOKEN }
-  });
-  return vehicleId;
-});
+export const removeVehicle = createAsyncThunk(
+  'vehiclesApp/vehicles/removeVehicle',
+  async (vehicleId, { rejectWithValue, dispatch }) => {
+    try {
+      await axios.delete(`https://cargofleet-api.fly.dev/team1/api/vehicles/${vehicleId}`, {
+        headers: { Authorization: TOKEN }
+      });
+      return vehicleId;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'An error occurred while deleting the vehicle.');
+    }
+  }
+);
 
 // export const removeVehicles = createAsyncThunk(
 //   'vehiclesApp/vehicles/removeVehicles',
@@ -180,7 +187,6 @@ const vehiclesSlice = createSlice({
     }
   },
   extraReducers: {
-
     [updateVehicle.fulfilled]: (state, action) => vehiclesAdapter.upsertOne(state, action.payload),
     // [addVehicle.fulfilled]: vehiclesAdapter.addOne,
 

@@ -2,9 +2,10 @@ import { useHistory } from 'react-router';
 import { motion } from 'framer-motion';
 import FuseUtils from '@fuse/utils';
 import Typography from '@material-ui/core/Typography';
+import { GridCloseIcon } from '@material-ui/data-grid';
 import { useMemo, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button } from '@material-ui/core';
+import { Button, IconButton, Snackbar } from '@material-ui/core';
 import VehiclesTable from './VehiclesTable';
 import {
   // openEditContactDialog,
@@ -29,6 +30,9 @@ function VehiclesList(props) {
   const searchText = useSelector(({ vehiclesApp }) => vehiclesApp.vehicles.searchText);
 
   const [filteredData, setFilteredData] = useState(null);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   const columns = useMemo(
     () => [
@@ -83,7 +87,7 @@ function VehiclesList(props) {
             <button
               type="button"
               className="px-4 py-2 bg-red-500 text-white rounded"
-              onClick={() => dispatch(removeVehicle(row.original.id))}
+              onClick={() => handleDelete(row.original)}
             >
               Delete
             </button>
@@ -98,9 +102,30 @@ function VehiclesList(props) {
     console.log('Edit clicked for row:', rowData);
     // Add logic to open a modal or navigate to an edit page
   };
-  const handleDelete = rowData => {
-    console.log('Delete clicked for row:', rowData);
-    // Add logic to delete the row
+  const handleDelete = async rowData => {
+    try {
+      const resultAction = await dispatch(removeVehicle(rowData.id));
+
+      if (removeVehicle.rejected.match(resultAction)) {
+        const errorMsg = resultAction.payload.error;
+        setErrorMessage(errorMsg || 'Failed to delete vehicle. Please try again.');
+        setSuccessMessage('');
+        setOpenSnackbar(true);
+      } else {
+        setSuccessMessage('Vehicle successfully deleted.');
+        setErrorMessage('');
+        setOpenSnackbar(true);
+      }
+    } catch (error) {
+      setErrorMessage(error.message);
+      setSuccessMessage('');
+      setOpenSnackbar(true);
+    }
+  };
+
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === 'clickaway') return;
+    setOpenSnackbar(false);
   };
 
   useEffect(() => {
@@ -157,6 +182,19 @@ function VehiclesList(props) {
           // }}
         />
       </motion.div>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={3000}
+        onClose={handleCloseSnackbar}
+        message={errorMessage || successMessage}
+        action={
+          <>
+            <IconButton size="small" aria-label="close" color="inherit" onClick={handleCloseSnackbar}>
+              <GridCloseIcon fontSize="small" />
+            </IconButton>
+          </>
+        }
+      />
     </>
   );
 }
