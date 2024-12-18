@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import FuseUtils from '@fuse/utils';
 import Typography from '@material-ui/core/Typography';
 import { GridCloseIcon } from '@material-ui/data-grid';
-import { useMemo, useEffect, useState } from 'react';
+import { useMemo, useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, IconButton, Snackbar } from '@material-ui/core';
 import VehiclesTable from './VehiclesTable';
@@ -33,6 +33,30 @@ function VehiclesList(props) {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+
+  const handleDelete = useCallback(
+    async rowData => {
+      try {
+        const resultAction = await dispatch(removeVehicle(rowData.id));
+
+        if (removeVehicle.rejected.match(resultAction)) {
+          const errorMsg = resultAction.payload.error;
+          setErrorMessage(errorMsg || 'Failed to delete vehicle. Please try again.');
+          setSuccessMessage('');
+          setOpenSnackbar(true);
+        } else {
+          setSuccessMessage('Vehicle successfully deleted.');
+          setErrorMessage('');
+          setOpenSnackbar(true);
+        }
+      } catch (error) {
+        setErrorMessage(error.message);
+        setSuccessMessage('');
+        setOpenSnackbar(true);
+      }
+    },
+    [dispatch]
+  );
 
   const columns = useMemo(
     () => [
@@ -95,32 +119,12 @@ function VehiclesList(props) {
         )
       }
     ],
-    [dispatch, vehicles]
+    [dispatch, handleDelete]
   );
 
   const handleEdit = rowData => {
     console.log('Edit clicked for row:', rowData);
     // Add logic to open a modal or navigate to an edit page
-  };
-  const handleDelete = async rowData => {
-    try {
-      const resultAction = await dispatch(removeVehicle(rowData.id));
-
-      if (removeVehicle.rejected.match(resultAction)) {
-        const errorMsg = resultAction.payload.error;
-        setErrorMessage(errorMsg || 'Failed to delete vehicle. Please try again.');
-        setSuccessMessage('');
-        setOpenSnackbar(true);
-      } else {
-        setSuccessMessage('Vehicle successfully deleted.');
-        setErrorMessage('');
-        setOpenSnackbar(true);
-      }
-    } catch (error) {
-      setErrorMessage(error.message);
-      setSuccessMessage('');
-      setOpenSnackbar(true);
-    }
   };
 
   const handleCloseSnackbar = (event, reason) => {

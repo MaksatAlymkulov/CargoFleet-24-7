@@ -67,10 +67,7 @@ function DriverDialog(props) {
 
   const { isValid, dirtyFields, errors } = formState;
 
-  console.log('######## ', dirtyFields);
-
   const id = watch('id');
-  const first_name = watch('first_name');
 
   /**
    * Initialize Dialog with Data

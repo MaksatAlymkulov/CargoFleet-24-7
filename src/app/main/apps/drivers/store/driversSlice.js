@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, createEntityAdapter } from '@reduxjs/toolkit';
 import axios from 'axios';
+
 const TOKEN = 'Zb84MzAROCrhmF6t';
 
 export const getDrivers = createAsyncThunk('driver-list-app/drivers/getDrivers', async (routeParams, { getState }) => {
