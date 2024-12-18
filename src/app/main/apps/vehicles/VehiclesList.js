@@ -95,7 +95,7 @@ function VehiclesList(props) {
         )
       }
     ],
-    [dispatch, vehicles]
+    [dispatch]
   );
 
   const handleEdit = rowData => {

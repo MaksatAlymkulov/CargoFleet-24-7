@@ -64,7 +64,7 @@ function DriversList(props) {
         )
       }
     ],
-    [dispatch, drivers]
+    [dispatch]
   );
 
   useEffect(() => {
