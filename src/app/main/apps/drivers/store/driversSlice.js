@@ -30,12 +30,19 @@ export const updateDriver = createAsyncThunk('driversApp/drivers/updateDriver', 
   return response.data;
 });
 
-export const removeDriver = createAsyncThunk('driversApp/drivers/removeDriver', async driverId => {
-  await axios.delete(`https://cargofleet-api.fly.dev/team1/api/drivers/${driverId}`, {
-    headers: { Authorization: TOKEN }
-  });
-  return driverId;
-});
+export const removeDriver = createAsyncThunk(
+  'driversApp/drivers/removeDriver',
+  async (driverId, { rejectWithValue, dispatch }) => {
+    try {
+      await axios.delete(`https://cargofleet-api.fly.dev/team1/api/drivers/${driverId}`, {
+        headers: { Authorization: TOKEN }
+      });
+      return driverId;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'An error occurred while deleting the driver.');
+    }
+  }
+);
 
 const driversAdapter = createEntityAdapter({});
 
