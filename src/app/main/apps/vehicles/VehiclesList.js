@@ -94,15 +94,6 @@ function VehiclesList(props) {
     [dispatch, vehicles]
   );
 
-  const handleEdit = rowData => {
-    console.log('Edit clicked for row:', rowData);
-    // Add logic to open a modal or navigate to an edit page
-  };
-  const handleDelete = rowData => {
-    console.log('Delete clicked for row:', rowData);
-    // Add logic to delete the row
-  };
-
   useEffect(() => {
     function getFilteredArray(entities, _searchText) {
       if (_searchText.length === 0) {

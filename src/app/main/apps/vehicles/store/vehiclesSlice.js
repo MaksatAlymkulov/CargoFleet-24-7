@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, createEntityAdapter } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, createEntityAdapter, isRejectedWithValue } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 const TOKEN = 'Zb84MzAROCrhmF6t';
@@ -47,6 +47,24 @@ export const removeVehicle = createAsyncThunk('vehiclesApp/vehicles/removeVehicl
     headers: { Authorization: TOKEN }
   });
   return vehicleId;
+});
+
+export const addIssue = createAsyncThunk('vehiclesApp/vehicles/addIssue', async issue => {
+  try {
+    const { vehicle_id, ...issueDetails } = issue;
+    const response = await axios.post(
+      `https://cargofleet-api.fly.dev/team1/api/vehicles/${vehicle_id}/issues`,
+      issueDetails,
+      {
+        headers: { Authorization: TOKEN }
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error('API Error:', error.response?.data || error.message);
+    throw error;
+  }
 });
 
 // export const removeVehicles = createAsyncThunk(
@@ -116,8 +134,6 @@ export const removeVehicle = createAsyncThunk('vehiclesApp/vehicles/removeVehicl
 
 const vehiclesAdapter = createEntityAdapter({});
 
-console.log(vehiclesAdapter.getSelectors(state => state.vehiclesApp.vehicles));
-
 export const { selectAll: selectVehicles, selectById: selectVehiclesById } = vehiclesAdapter.getSelectors(
   state => state.vehiclesApp.vehicles
 );
@@ -129,6 +145,13 @@ const vehiclesSlice = createSlice({
     routeParams: {},
     vehicleDialog: {
       type: 'new',
+      props: {
+        open: false
+      },
+      data: null
+    },
+    vehicleIssueDialog: {
+      type: 'issue',
       props: {
         open: false
       },
@@ -177,15 +200,29 @@ const vehiclesSlice = createSlice({
         },
         data: null
       };
+    },
+    openNewVehicleIssueDialog: (state, action) => {
+      state.vehicleIssueDialog = {
+        type: 'issue',
+        props: {
+          open: true
+        },
+        data: null
+      };
+    },
+    closeNewVehicleIssueDialog: (state, action) => {
+      state.vehicleIssueDialog = {
+        type: 'issue',
+        props: {
+          open: false
+        },
+        data: null
+      };
     }
   },
   extraReducers: {
-
     [updateVehicle.fulfilled]: (state, action) => vehiclesAdapter.upsertOne(state, action.payload),
-    // [addVehicle.fulfilled]: vehiclesAdapter.addOne,
-
     [addVehicle.fulfilled]: vehiclesAdapter.addOne,
-
     // [removeVehicles.fulfilled]: (state, action) => vehiclesAdapter.removeMany(state, action.payload),
     [removeVehicle.fulfilled]: (state, action) => vehiclesAdapter.removeOne(state, action.payload),
     [getVehicles.fulfilled]: (state, action) => {
@@ -197,6 +234,10 @@ const vehiclesSlice = createSlice({
     [getVehicle.fulfilled]: (state, action) => {
       const vehicle = action.payload;
       vehiclesAdapter.upsertOne(state, vehicle);
+    },
+    [addIssue.fulfilled]: (state, action) => {
+      console.log('API Response:', action.payload);
+      vehiclesAdapter.upsertOne(state, action.payload);
     }
   }
 });
@@ -206,7 +247,9 @@ export const {
   openNewVehicleDialog,
   closeNewVehicleDialog,
   openEditVehicleDialog,
-  closeEditVehicleDialog
+  closeEditVehicleDialog,
+  openNewVehicleIssueDialog,
+  closeNewVehicleIssueDialog
 } = vehiclesSlice.actions;
 
 export default vehiclesSlice.reducer;

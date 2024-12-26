@@ -12,11 +12,15 @@ import {
   Checkbox
 } from '@material-ui/core';
 import { format } from 'date-fns';
+import { useParams } from 'react-router';
 import Typography from '@material-ui/core/Typography';
-import { useSelector } from 'react-redux';
-import { selectVehiclesById } from './store/vehiclesSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { openNewVehicleIssueDialog, selectVehiclesById } from './store/vehiclesSlice';
+import VehicleIssueDialog from './VehicleIssueDialog';
 
-const VehicleDetails = ({ id }) => {
+const VehicleDetails = () => {
+  const { id } = useParams();
+  const dispatch = useDispatch();
   const vehicle = useSelector(state => selectVehiclesById(state, id));
   const loading = useSelector(state => state.vehiclesApp.vehicles.loading);
   const error = useSelector(state => state.vehiclesApp.vehicles.error);
@@ -120,10 +124,11 @@ const VehicleDetails = ({ id }) => {
             No issues
           </Table>
         )}
-        <Button variant="outlined" color="primary">
+        <Button variant="outlined" color="primary" onClick={() => dispatch(openNewVehicleIssueDialog())}>
           Schedule a maintenance
         </Button>
       </TableContainer>
+      <VehicleIssueDialog id={id} />
     </Box>
   );
 };
