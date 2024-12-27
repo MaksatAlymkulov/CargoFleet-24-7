@@ -11,11 +11,13 @@ import {
   TableRow,
   Checkbox
 } from '@material-ui/core';
+import Icon from '@material-ui/core/Icon';
+import IconButton from '@material-ui/core/IconButton';
 import { format } from 'date-fns';
 import { useParams } from 'react-router';
 import Typography from '@material-ui/core/Typography';
 import { useDispatch, useSelector } from 'react-redux';
-import { openNewVehicleIssueDialog, selectVehiclesById } from './store/vehiclesSlice';
+import { getVehicle, openNewVehicleIssueDialog, removeIssue, selectVehiclesById } from './store/vehiclesSlice';
 import VehicleIssueDialog from './VehicleIssueDialog';
 
 const VehicleDetails = () => {
@@ -36,6 +38,11 @@ const VehicleDetails = () => {
   if (!vehicle) {
     return <Typography>Vehicle not found.</Typography>;
   }
+
+  const handleDelete = async issue => {
+    await dispatch(removeIssue(issue));
+    dispatch(getVehicle(id));
+  };
 
   return (
     <Box style={{ padding: '24px' }}>
@@ -102,6 +109,7 @@ const VehicleDetails = () => {
                 <TableCell align="right">Priority:</TableCell>
                 <TableCell align="right">Due date:</TableCell>
                 <TableCell align="right">Completed:</TableCell>
+                <TableCell align="right">Delete:</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -114,6 +122,11 @@ const VehicleDetails = () => {
                   <TableCell align="right">{format(new Date(issue.due_date), 'MMM d, yyyy')}</TableCell>
                   <TableCell align="right">
                     <Checkbox color="primary" onChange={() => {}} />
+                  </TableCell>
+                  <TableCell align="right">
+                    <IconButton style={{ color: 'black' }} onClick={() => handleDelete(issue)}>
+                      <Icon>delete</Icon>
+                    </IconButton>
                   </TableCell>
                 </TableRow>
               ))}

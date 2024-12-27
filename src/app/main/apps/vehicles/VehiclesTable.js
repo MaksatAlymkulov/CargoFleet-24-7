@@ -31,7 +31,7 @@ const EnhancedTable = ({ columns, data, onRowClick }) => {
     useGlobalFilter,
     useSortBy,
     usePagination,
-    useRowSelect,
+    useRowSelect
   );
 
   const handleChangePage = (event, newPage) => {

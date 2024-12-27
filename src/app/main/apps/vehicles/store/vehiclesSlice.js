@@ -51,9 +51,9 @@ export const removeVehicle = createAsyncThunk('vehiclesApp/vehicles/removeVehicl
 
 export const addIssue = createAsyncThunk('vehiclesApp/vehicles/addIssue', async issue => {
   try {
-    const { vehicle_id, ...issueDetails } = issue;
+    const { vehicleId, ...issueDetails } = issue;
     const response = await axios.post(
-      `https://cargofleet-api.fly.dev/team1/api/vehicles/${vehicle_id}/issues`,
+      `https://cargofleet-api.fly.dev/team1/api/vehicles/${vehicleId}/issues`,
       issueDetails,
       {
         headers: { Authorization: TOKEN }
@@ -65,6 +65,16 @@ export const addIssue = createAsyncThunk('vehiclesApp/vehicles/addIssue', async 
     console.error('API Error:', error.response?.data || error.message);
     throw error;
   }
+});
+
+export const removeIssue = createAsyncThunk('vehiclesApp/vehicles/removeIssue', async issue => {
+  const response = await axios.delete(
+    `https://cargofleet-api.fly.dev/team1/api/vehicles/${issue.vehicle_id}/issues/${issue.id}`,
+    {
+      headers: { Authorization: TOKEN }
+    }
+  );
+  return { id: issue.id, response: response.data };
 });
 
 // export const removeVehicles = createAsyncThunk(
@@ -238,7 +248,8 @@ const vehiclesSlice = createSlice({
     [addIssue.fulfilled]: (state, action) => {
       console.log('API Response:', action.payload);
       vehiclesAdapter.upsertOne(state, action.payload);
-    }
+    },
+    [removeIssue.fulfilled]: (state, action) => vehiclesAdapter.removeOne(state, action.payload)
   }
 });
 

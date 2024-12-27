@@ -1,19 +1,19 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
+import { AppBar, Icon, IconButton, Toolbar, Typography } from '@material-ui/core';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
-import FuseUtils from '@fuse/utils';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 
 import _ from '@lodash';
 import * as yup from 'yup';
 
-import { addIssue, closeNewVehicleIssueDialog, getVehicle, selectVehiclesById } from './store/vehiclesSlice';
+import { addIssue, closeNewVehicleIssueDialog, getVehicle } from './store/vehiclesSlice';
 
 /**
  * Form Validation Schema
@@ -21,20 +21,23 @@ import { addIssue, closeNewVehicleIssueDialog, getVehicle, selectVehiclesById } 
 const schema = yup.object().shape({
   description: yup.string().required('You must enter a description'),
   priority: yup.string().required('You must select a priority').oneOf(['low', 'medium', 'high'], 'Invalid priority'),
-  due_date: yup.string().required('You must enter a due date')
+  due_date: yup.date().min(new Date(), 'Please choose future date')
 });
 
 function VehicleIssueDialog({ id }) {
   const dispatch = useDispatch();
   const vehicleIssueDialog = useSelector(({ vehiclesApp }) => vehiclesApp.vehicles.vehicleIssueDialog);
 
-  const defaultValues = {
-    description: '',
-    priority: '',
-    due_date: ''
-  };
+  const defaultValues = useMemo(
+    () => ({
+      description: '',
+      priority: '',
+      due_date: ''
+    }),
+    []
+  );
 
-  const { control, reset, handleSubmit, formState, getValues, watch } = useForm({
+  const { control, reset, handleSubmit, formState } = useForm({
     mode: 'onChange',
     defaultValues,
     resolver: yupResolver(schema)
@@ -45,14 +48,12 @@ function VehicleIssueDialog({ id }) {
    * Initialize Dialog with Data
    */
   const initDialog = useCallback(() => {
-    if (vehicleIssueDialog.type === 'issue') {
-      reset({
-        ...defaultValues,
-        ...vehicleIssueDialog.data,
-        vehicle_id: id
-      });
-    }
-  }, [vehicleIssueDialog.data, vehicleIssueDialog.type, reset]);
+    reset({
+      ...defaultValues,
+      ...vehicleIssueDialog.data,
+      vehicleId: id
+    });
+  }, [defaultValues, id, vehicleIssueDialog.data, reset]);
 
   /**
    * On Dialog Open
@@ -73,12 +74,15 @@ function VehicleIssueDialog({ id }) {
   /**
    * Form Submit
    */
-  function onSubmit(data) {
-    if (vehicleIssueDialog.type === 'issue') {
-      dispatch(addIssue(data)).then(dispatch(getVehicle(data.vehicle_id)));
+  const onSubmit = async data => {
+    try {
+      await dispatch(addIssue(data));
+      dispatch(getVehicle(data.vehicleId));
+      closeComposeDialog();
+    } catch (error) {
+      console.error('Failed to add issue', error);
     }
-    closeComposeDialog();
-  }
+  };
 
   /**
    * Remove Event
@@ -97,6 +101,16 @@ function VehicleIssueDialog({ id }) {
       fullWidth
       maxWidth="xs"
     >
+      <AppBar position="static" elevation={0}>
+        <Toolbar className="flex w-full">
+          <Typography variant="subtitle1" color="inherit">
+            Add Issue
+          </Typography>
+          <IconButton onClick={closeComposeDialog} style={{ marginLeft: 'auto', color: 'white' }}>
+            <Icon>close</Icon>
+          </IconButton>
+        </Toolbar>
+      </AppBar>
       <form noValidate onSubmit={handleSubmit(onSubmit)} className="flex flex-col md:overflow-hidden">
         <DialogContent classes={{ root: 'p-24' }}>
           <div className="flex">
