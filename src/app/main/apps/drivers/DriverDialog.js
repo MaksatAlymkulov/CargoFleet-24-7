@@ -26,18 +26,33 @@ import {
 } from './store/driversSlice';
 
 const defaultValues = {
-  id: '',
+  // id: '',
   first_name: '',
+  last_name: '',
+  birth_date: '',
   phone_number: '',
-  email: ''
+  email: '',
+  address1: '',
+  city: '',
+  state: '',
+  postal_code: '',
+  license_number: ''
 };
+
 /**
  * Form Validation Schema
  */
 const schema = yup.object().shape({
   first_name: yup.string().required('You must enter a name'),
+  last_name: yup.string().required('You must enter your last name'),
   phone_number: yup.string().required('You must enter a phone number'),
-  email: yup.string().required('You must enter an email').email('Invalid email format')
+  email: yup.string().required('You must enter an email').email('Invalid email format'),
+  address1: yup.string().required('You must enter your address'),
+  city: yup.string().required('You must enter city'),
+  state: yup.string().required('You must enter state'),
+  postal_code: yup.string().required('You must enter a zip code'),
+  license_number: yup.string().required('You must enter your license number'),
+  birth_date: yup.string().required('You must enter your birth date')
 });
 
 function DriverDialog(props) {
@@ -53,7 +68,6 @@ function DriverDialog(props) {
   const { isValid, dirtyFields, errors } = formState;
 
   const id = watch('id');
-  const first_name = watch('first_name');
 
   /**
    * Initialize Dialog with Data
@@ -145,8 +159,27 @@ function DriverDialog(props) {
                   className="mb-24"
                   label="First Name"
                   id="first_name"
-                  error={!!errors.name}
-                  helperText={errors?.name?.message}
+                  error={!!errors.first_name}
+                  helperText={errors?.first_name?.message}
+                  variant="outlined"
+                  required
+                  fullWidth
+                />
+              )}
+            />
+          </div>
+          <div className="flex">
+            <Controller
+              control={control}
+              name="last_name"
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  className="mb-24"
+                  label="Last Name"
+                  id="last_name"
+                  error={!!errors.last_name}
+                  helperText={errors?.last_name?.message}
                   variant="outlined"
                   required
                   fullWidth
@@ -185,6 +218,120 @@ function DriverDialog(props) {
                   id="email"
                   error={!!errors.email}
                   helperText={errors?.email?.message}
+                  variant="outlined"
+                  required
+                  fullWidth
+                />
+              )}
+            />
+          </div>
+          <div className="flex">
+            <Controller
+              control={control}
+              name="birth_date"
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  className="mb-24"
+                  type="date"
+                  id="birth_date"
+                  error={!!errors.birth_date}
+                  helperText={errors?.birth_date?.message}
+                  variant="outlined"
+                  required
+                  fullWidth
+                />
+              )}
+            />
+          </div>
+          <div className="flex">
+            <Controller
+              control={control}
+              name="address1"
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  className="mb-24"
+                  label="address1"
+                  id="address1"
+                  error={!!errors.address1}
+                  helperText={errors?.address1?.message}
+                  variant="outlined"
+                  required
+                  fullWidth
+                />
+              )}
+            />
+          </div>
+          <div className="flex">
+            <Controller
+              control={control}
+              name="city"
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  className="mb-24"
+                  label="city"
+                  id="city"
+                  error={!!errors.city}
+                  helperText={errors?.city?.message}
+                  variant="outlined"
+                  required
+                  fullWidth
+                />
+              )}
+            />
+          </div>
+          <div className="flex">
+            <Controller
+              control={control}
+              name="state"
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  className="mb-24"
+                  label="state"
+                  id="state"
+                  error={!!errors.state}
+                  helperText={errors?.state?.message}
+                  variant="outlined"
+                  required
+                  fullWidth
+                />
+              )}
+            />
+          </div>
+          <div className="flex">
+            <Controller
+              control={control}
+              name="postal_code"
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  className="mb-24"
+                  label="postal_code"
+                  id="postal_code"
+                  error={!!errors.postal_code}
+                  helperText={errors?.postal_code?.message}
+                  variant="outlined"
+                  required
+                  fullWidth
+                />
+              )}
+            />
+          </div>
+          <div className="flex">
+            <Controller
+              control={control}
+              name="license_number"
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  className="mb-24"
+                  label="license_number"
+                  id="license_number"
+                  error={!!errors.license_number}
+                  helperText={errors?.license_number?.message}
                   variant="outlined"
                   required
                   fullWidth

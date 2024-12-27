@@ -42,12 +42,19 @@ export const updateVehicle = createAsyncThunk('vehiclesApp/vehicles/updateVehicl
   return response.data;
 });
 
-export const removeVehicle = createAsyncThunk('vehiclesApp/vehicles/removeVehicle', async vehicleId => {
-  await axios.delete(`https://cargofleet-api.fly.dev/team1/api/vehicles/${vehicleId}`, {
-    headers: { Authorization: TOKEN }
-  });
-  return vehicleId;
-});
+export const removeVehicle = createAsyncThunk(
+  'vehiclesApp/vehicles/removeVehicle',
+  async (vehicleId, { rejectWithValue, dispatch }) => {
+    try {
+      await axios.delete(`https://cargofleet-api.fly.dev/team1/api/vehicles/${vehicleId}`, {
+        headers: { Authorization: TOKEN }
+      });
+      return vehicleId;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'An error occurred while deleting the vehicle.');
+    }
+  }
+);
 
 export const addIssue = createAsyncThunk('vehiclesApp/vehicles/addIssue', async issue => {
   try {
