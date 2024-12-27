@@ -28,7 +28,7 @@ function ProjectDashboardAppSidebar() {
         <WidgetNow />
       </motion.div>
       <motion.div variants={item} className="widget flex w-full p-12">
-        <WidgetWeather widget={widgets.weatherWidget} />
+        <WidgetWeather />
       </motion.div>
     </motion.div>
   );

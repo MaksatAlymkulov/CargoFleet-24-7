@@ -122,7 +122,6 @@ function VehiclesList(props) {
     [dispatch, handleDelete]
   );
 
-
   const handleEdit = rowData => {
     console.log('Edit clicked for row:', rowData);
     // Add logic to open a modal or navigate to an edit page

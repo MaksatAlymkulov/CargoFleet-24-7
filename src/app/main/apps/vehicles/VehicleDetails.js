@@ -17,7 +17,13 @@ import { format } from 'date-fns';
 import { useParams } from 'react-router';
 import Typography from '@material-ui/core/Typography';
 import { useDispatch, useSelector } from 'react-redux';
-import { getVehicle, openNewVehicleIssueDialog, removeIssue, selectVehiclesById } from './store/vehiclesSlice';
+import {
+  completeIssue,
+  getVehicle,
+  openNewVehicleIssueDialog,
+  removeIssue,
+  selectVehiclesById
+} from './store/vehiclesSlice';
 import VehicleIssueDialog from './VehicleIssueDialog';
 
 const VehicleDetails = () => {
@@ -42,6 +48,16 @@ const VehicleDetails = () => {
   const handleDelete = async issue => {
     await dispatch(removeIssue(issue));
     dispatch(getVehicle(id));
+  };
+
+  const handleComplete = async issue => {
+    const result = await dispatch(completeIssue(issue));
+    if (completeIssue.fulfilled.match(result)) {
+      console.log('Issue marked as complete:', result.payload);
+      dispatch(getVehicle(id));
+    } else {
+      console.error('Failed to mark issue as complete:', result.payload);
+    }
   };
 
   return (
@@ -121,7 +137,7 @@ const VehicleDetails = () => {
                   <TableCell align="right">{issue.priority}</TableCell>
                   <TableCell align="right">{format(new Date(issue.due_date), 'MMM d, yyyy')}</TableCell>
                   <TableCell align="right">
-                    <Checkbox color="primary" onChange={() => {}} />
+                    <Checkbox color="primary" checked={issue.completed} onChange={() => handleComplete(issue)} />
                   </TableCell>
                   <TableCell align="right">
                     <IconButton style={{ color: 'black' }} onClick={() => handleDelete(issue)}>
