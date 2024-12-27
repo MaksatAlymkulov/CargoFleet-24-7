@@ -11,12 +11,18 @@ import {
   TableRow,
   Checkbox
 } from '@material-ui/core';
+import Icon from '@material-ui/core/Icon';
+import IconButton from '@material-ui/core/IconButton';
 import { format } from 'date-fns';
+import { useParams } from 'react-router';
 import Typography from '@material-ui/core/Typography';
-import { useSelector } from 'react-redux';
-import { selectVehiclesById } from './store/vehiclesSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { getVehicle, openNewVehicleIssueDialog, removeIssue, selectVehiclesById } from './store/vehiclesSlice';
+import VehicleIssueDialog from './VehicleIssueDialog';
 
-const VehicleDetails = ({ id }) => {
+const VehicleDetails = () => {
+  const { id } = useParams();
+  const dispatch = useDispatch();
   const vehicle = useSelector(state => selectVehiclesById(state, id));
   const loading = useSelector(state => state.vehiclesApp.vehicles.loading);
   const error = useSelector(state => state.vehiclesApp.vehicles.error);
@@ -32,6 +38,11 @@ const VehicleDetails = ({ id }) => {
   if (!vehicle) {
     return <Typography>Vehicle not found.</Typography>;
   }
+
+  const handleDelete = async issue => {
+    await dispatch(removeIssue(issue));
+    dispatch(getVehicle(id));
+  };
 
   return (
     <Box style={{ padding: '24px' }}>
@@ -98,6 +109,7 @@ const VehicleDetails = ({ id }) => {
                 <TableCell align="right">Priority:</TableCell>
                 <TableCell align="right">Due date:</TableCell>
                 <TableCell align="right">Completed:</TableCell>
+                <TableCell align="right">Delete:</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -111,6 +123,11 @@ const VehicleDetails = ({ id }) => {
                   <TableCell align="right">
                     <Checkbox color="primary" onChange={() => {}} />
                   </TableCell>
+                  <TableCell align="right">
+                    <IconButton style={{ color: 'black' }} onClick={() => handleDelete(issue)}>
+                      <Icon>delete</Icon>
+                    </IconButton>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -120,10 +137,11 @@ const VehicleDetails = ({ id }) => {
             No issues
           </Table>
         )}
-        <Button variant="outlined" color="primary">
+        <Button variant="outlined" color="primary" onClick={() => dispatch(openNewVehicleIssueDialog())}>
           Schedule a maintenance
         </Button>
       </TableContainer>
+      <VehicleIssueDialog id={id} />
     </Box>
   );
 };
