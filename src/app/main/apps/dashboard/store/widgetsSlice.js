@@ -17,9 +17,21 @@ import axios from 'axios';
 export const getWidgets = createAsyncThunk('projectDashboardApp/widgets/getWidgets', async () => {
   const response = await axios.get('/api/project-dashboard-app/widgets');
   const data = await response.data;
-
   return data;
 });
+
+export const fetchWeatherData = createAsyncThunk(
+  'projectDashboardApp/widgets/fetchWeatherData',
+  async ({ latitude, longitude }) => {
+    const apiKey = '07be8dba2453f7df3552fced080f306a';
+    const response = await axios.get(
+      `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=metric`
+    );
+    const data = await response.data;
+    return data;
+  }
+);
+
 const widgetsAdapter = createEntityAdapter({});
 
 export const { selectEntities: selectWidgets, selectById: selectWidgetById } = widgetsAdapter.getSelectors(
@@ -28,10 +40,13 @@ export const { selectEntities: selectWidgets, selectById: selectWidgetById } = w
 
 const widgetsSlice = createSlice({
   name: 'projectDashboardApp/widgets',
-  initialState: widgetsAdapter.getInitialState(),
+  initialState: widgetsAdapter.getInitialState({ additionalWeather: null }),
   reducers: {},
   extraReducers: {
-    [getWidgets.fulfilled]: widgetsAdapter.setAll
+    [getWidgets.fulfilled]: widgetsAdapter.setAll,
+    [fetchWeatherData.fulfilled]: (state, action) => {
+      state.additionalWeather = action.payload;
+    }
   }
 });
 

@@ -84,6 +84,17 @@ export const removeIssue = createAsyncThunk('vehiclesApp/vehicles/removeIssue', 
   return { id: issue.id, response: response.data };
 });
 
+export const completeIssue = createAsyncThunk('vehiclesApp/vehicles/completeIssue', async issue => {
+  console.log('issue', issue);
+  const response = await axios.patch(
+    `https://cargofleet-api.fly.dev/team1/api/vehicles/${issue.vehicle_id}/issues/${issue.id}/complete`,
+    {
+      headers: { Authorization: TOKEN }
+    }
+  );
+  return { id: issue.id, response: response.data };
+});
+
 // export const removeVehicles = createAsyncThunk(
 //   'vehiclesApp/vehicles/removeVehicles',
 //   async (vehicleIds, { dispatch, getState }) => {
@@ -256,7 +267,8 @@ const vehiclesSlice = createSlice({
       console.log('API Response:', action.payload);
       vehiclesAdapter.upsertOne(state, action.payload);
     },
-    [removeIssue.fulfilled]: (state, action) => vehiclesAdapter.removeOne(state, action.payload)
+    [removeIssue.fulfilled]: (state, action) => vehiclesAdapter.removeOne(state, action.payload),
+    [completeIssue.fulfilled]: (state, action) => vehiclesAdapter.upsertOne(state, action.payload)
   }
 });
 
