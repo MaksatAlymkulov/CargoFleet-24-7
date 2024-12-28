@@ -45,9 +45,9 @@ function HomeTab() {
       <motion.div variants={item} className="widget flex w-full  p-12">
         <Widget5 widget={widgets.widget5} />
       </motion.div>
-      {/* <motion.div variants={item} className="widget flex w-full sm:w-1/2 p-12">
+      <motion.div variants={item} className="widget flex w-full sm:w-1/2 p-12">
         <Widget8 widget={widgets.widget8} />
-      </motion.div> */}
+      </motion.div>
       {/* <motion.div variants={item} className="widget flex w-full p-12">
         <Widget12 widget={widgets.widget12} />
       </motion.div> */}

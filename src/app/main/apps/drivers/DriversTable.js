@@ -66,7 +66,14 @@ const EnhancedTable = ({ columns, data, onRowClick }) => {
             {page.map((row, i) => {
               prepareRow(row);
               return (
-                <TableRow {...row.getRowProps()} className="truncate cursor-pointer">
+                <TableRow
+                  {...row.getRowProps()}
+                  onClick={ev => {
+                    console.log('Row DAta:', row);
+                    onRowClick?.(ev, row);
+                  }}
+                  className="truncate cursor-pointer"
+                >
                   {row.cells.map(cell => {
                     return (
                       <TableCell {...cell.getCellProps()} className={clsx('p-4 md:p-12', cell.column.className)}>

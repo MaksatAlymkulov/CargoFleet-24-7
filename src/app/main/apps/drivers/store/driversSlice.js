@@ -15,6 +15,15 @@ export const getDrivers = createAsyncThunk('driver-list-app/drivers/getDrivers',
   return { data, routeParams };
 });
 
+export const getDriver = createAsyncThunk('driver-list-app/drivers/getDrivers', async driverId => {
+  const response = await axios.get(`https://cargofleet-api.fly.dev/team1/api/drivers/${driverId}`, {
+    headers: {
+      Authorization: TOKEN
+    }
+  });
+  return response.data;
+});
+
 export const addDriver = createAsyncThunk('driversApp/drivers/addDriver', async driver => {
   const response = await axios.post('https://cargofleet-api.fly.dev/team1/api/drivers', driver, {
     headers: { Authorization: TOKEN }

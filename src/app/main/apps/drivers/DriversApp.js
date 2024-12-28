@@ -1,6 +1,6 @@
 import FusePageSimple from '@fuse/core/FusePageSimple';
 import withReducer from 'app/store/withReducer';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { useDeepCompareEffect } from '@fuse/hooks';
@@ -8,17 +8,19 @@ import DriverDialog from './DriverDialog';
 import DriversHeader from './DriversHeader';
 import DriversList from './DriversList';
 import reducer from './store';
-import { getDrivers } from './store/driversSlice';
+import { getDriver, getDrivers } from './store/driversSlice';
+import DriverDetails from './DriverDetails';
 
 function DriversApp(props) {
   const dispatch = useDispatch();
-
   const pageLayout = useRef(null);
   const routeParams = useParams();
+  const { id } = routeParams;
 
   useDeepCompareEffect(() => {
     dispatch(getDrivers(routeParams));
-  }, [dispatch, routeParams]);
+    dispatch(getDriver(id));
+  }, [dispatch, routeParams, id]);
 
   return (
     <>
@@ -31,7 +33,7 @@ function DriversApp(props) {
           wrapper: 'min-h-0'
         }}
         header={<DriversHeader pageLayout={pageLayout} />}
-        content={<DriversList />}
+        content={id === 'all' ? <DriversList /> : <DriverDetails id={id} />}
         sidebarInner
         ref={pageLayout}
         innerScroll
