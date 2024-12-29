@@ -1,0 +1,17 @@
+#!/bin/sh
+
+echo "Running yarn lint..."
+yarn lint
+
+# Capture the exit code of yarn lint
+RESULT=$?
+
+# If lint failed, prevent the commit
+if [ $RESULT -ne 0 ]; then
+  echo "❌ yarn lint failed, please fix the issues before committing"
+  exit 1
+fi
+
+# If we got here, lint passed
+echo "✅ yarn lint passed"
+exit 0

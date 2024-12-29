@@ -2,9 +2,9 @@ import { motion } from 'framer-motion';
 import { useHistory } from 'react-router';
 import FuseUtils from '@fuse/utils';
 import Typography from '@material-ui/core/Typography';
-import { useMemo, useEffect, useState } from 'react';
+import { useMemo, useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button } from '@material-ui/core';
+import { Button, Snackbar } from '@material-ui/core';
 import DriversTable from './DriversTable';
 import { openNewDriverDialog, openEditDriverDialog, selectDrivers, removeDriver } from './store/driversSlice';
 
@@ -19,10 +19,40 @@ function DriversList(props) {
   const history = useHistory();
   const dispatch = useDispatch();
   const drivers = useSelector(selectDrivers);
-
   const searchText = useSelector(({ driversApp }) => driversApp.drivers.searchText);
 
   const [filteredData, setFilteredData] = useState(null);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
+
+  const handleDeleteDriver = useCallback(
+    async rowData => {
+      try {
+        const resultAction = await dispatch(removeDriver(rowData.id));
+
+        if (removeDriver.rejected.match(resultAction)) {
+          const errorMsg = resultAction.payload?.error;
+          setErrorMessage(errorMsg || 'Failed to delete driver. Please try again.');
+          setSuccessMessage('');
+          setOpenSnackbar(true);
+        } else {
+          setSuccessMessage('Driver successfully deleted.');
+          setErrorMessage('');
+          setOpenSnackbar(true);
+        }
+      } catch (error) {
+        setErrorMessage(error.message || 'An unexpected error occurred.');
+        setSuccessMessage('');
+        setOpenSnackbar(true);
+      }
+    },
+    [dispatch]
+  );
 
   const columns = useMemo(
     () => [
@@ -58,7 +88,7 @@ function DriversList(props) {
             <button
               type="button"
               className="px-4 py-2 bg-red-500 text-white rounded"
-              onClick={() => dispatch(removeDriver(row.original.id))}
+              onClick={() => handleDeleteDriver(row.original)}
             >
               Delete
             </button>
@@ -66,7 +96,7 @@ function DriversList(props) {
         )
       }
     ],
-    [dispatch, drivers]
+    [dispatch, handleDeleteDriver]
   );
 
   useEffect(() => {
@@ -122,6 +152,12 @@ function DriversList(props) {
       <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1, transition: { delay: 0.2 } }}>
         <DriversTable columns={columns} data={formattedData} onRowClick={handleRowClick} />
       </motion.div>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={4000}
+        onClose={handleCloseSnackbar}
+        message={errorMessage || successMessage}
+      />
     </>
   );
 }

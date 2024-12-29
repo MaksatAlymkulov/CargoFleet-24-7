@@ -21,8 +21,7 @@ function VehiclesApp(props) {
 
   useDeepCompareEffect(() => {
     dispatch(getVehicles(routeParams));
-    dispatch(getVehicle(id));
-  }, [dispatch, routeParams, id]);
+  }, [dispatch, routeParams]);
 
   return (
     <>
@@ -35,7 +34,7 @@ function VehiclesApp(props) {
           wrapper: 'min-h-0'
         }}
         header={<VehiclesHeader pageLayout={pageLayout} />}
-        content={id === 'all' ? <VehiclesList /> : <VehicleDetails id={id} />}
+        content={id === 'all' ? <VehiclesList /> : <VehicleDetails />}
         // leftSidebarContent={<VehiclesSidebarContent />}
         sidebarInner
         ref={pageLayout}

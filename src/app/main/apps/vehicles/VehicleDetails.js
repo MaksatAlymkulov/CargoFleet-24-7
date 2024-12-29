@@ -11,12 +11,24 @@ import {
   TableRow,
   Checkbox
 } from '@material-ui/core';
+import Icon from '@material-ui/core/Icon';
+import IconButton from '@material-ui/core/IconButton';
 import { format } from 'date-fns';
+import { useParams } from 'react-router';
 import Typography from '@material-ui/core/Typography';
-import { useSelector } from 'react-redux';
-import { selectVehiclesById } from './store/vehiclesSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  completeIssue,
+  getVehicle,
+  openNewVehicleIssueDialog,
+  removeIssue,
+  selectVehiclesById
+} from './store/vehiclesSlice';
+import VehicleIssueDialog from './VehicleIssueDialog';
 
-const VehicleDetails = ({ id }) => {
+const VehicleDetails = () => {
+  const { id } = useParams();
+  const dispatch = useDispatch();
   const vehicle = useSelector(state => selectVehiclesById(state, id));
   const loading = useSelector(state => state.vehiclesApp.vehicles.loading);
   const error = useSelector(state => state.vehiclesApp.vehicles.error);
@@ -32,6 +44,21 @@ const VehicleDetails = ({ id }) => {
   if (!vehicle) {
     return <Typography>Vehicle not found.</Typography>;
   }
+
+  const handleDelete = async issue => {
+    await dispatch(removeIssue(issue));
+    dispatch(getVehicle(id));
+  };
+
+  const handleComplete = async issue => {
+    const result = await dispatch(completeIssue(issue));
+    if (completeIssue.fulfilled.match(result)) {
+      console.log('Issue marked as complete:', result.payload);
+      dispatch(getVehicle(id));
+    } else {
+      console.error('Failed to mark issue as complete:', result.payload);
+    }
+  };
 
   return (
     <Box style={{ padding: '24px' }}>
@@ -98,6 +125,7 @@ const VehicleDetails = ({ id }) => {
                 <TableCell align="right">Priority:</TableCell>
                 <TableCell align="right">Due date:</TableCell>
                 <TableCell align="right">Completed:</TableCell>
+                <TableCell align="right">Delete:</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -109,7 +137,12 @@ const VehicleDetails = ({ id }) => {
                   <TableCell align="right">{issue.priority}</TableCell>
                   <TableCell align="right">{format(new Date(issue.due_date), 'MMM d, yyyy')}</TableCell>
                   <TableCell align="right">
-                    <Checkbox color="primary" onChange={() => {}} />
+                    <Checkbox color="primary" checked={issue.completed} onChange={() => handleComplete(issue)} />
+                  </TableCell>
+                  <TableCell align="right">
+                    <IconButton style={{ color: 'black' }} onClick={() => handleDelete(issue)}>
+                      <Icon>delete</Icon>
+                    </IconButton>
                   </TableCell>
                 </TableRow>
               ))}
@@ -120,10 +153,11 @@ const VehicleDetails = ({ id }) => {
             No issues
           </Table>
         )}
-        <Button variant="outlined" color="primary">
+        <Button variant="outlined" color="primary" onClick={() => dispatch(openNewVehicleIssueDialog())}>
           Schedule a maintenance
         </Button>
       </TableContainer>
+      <VehicleIssueDialog id={id} />
     </Box>
   );
 };

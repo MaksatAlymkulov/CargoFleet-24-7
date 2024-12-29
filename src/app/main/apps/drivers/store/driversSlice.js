@@ -15,7 +15,7 @@ export const getDrivers = createAsyncThunk('driver-list-app/drivers/getDrivers',
   return { data, routeParams };
 });
 
-export const getDriver = createAsyncThunk('driver-list-app/drivers/getDrivers', async driverId => {
+export const getDriver = createAsyncThunk('driver-list-app/drivers/getDriver', async driverId => {
   const response = await axios.get(`https://cargofleet-api.fly.dev/team1/api/drivers/${driverId}`, {
     headers: {
       Authorization: TOKEN
@@ -117,6 +117,11 @@ const driversSlice = createSlice({
       driversAdapter.setAll(state, data);
       state.routeParams = routeParams;
       state.searchText = '';
+    },
+    [getDriver.fulfilled]: (state, action) => {
+      const driver = action.payload;
+      console.log('Driver data being inserted:', driver);
+      driversAdapter.upsertOne(state, driver);
     }
   }
 });
