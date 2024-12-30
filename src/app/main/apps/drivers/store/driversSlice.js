@@ -45,6 +45,16 @@ export const removeDriver = createAsyncThunk('driversApp/drivers/removeDriver', 
   return driverId;
 });
 
+export const completeTrip = createAsyncThunk('driversApp/drivers/removeDriver', async ({ driverId, tripId }) => {
+  await axios.patch(
+    `https://cargofleet-api.fly.dev/team1/api/drivers/${driverId}/trips/${tripId}/complete`,
+    {},
+    {
+      headers: { Authorization: TOKEN }
+    }
+  );
+  return { driverId, tripId };
+});
 const driversAdapter = createEntityAdapter({});
 
 export const { selectAll: selectDrivers, selectById: selectDriverById } = driversAdapter.getSelectors(
@@ -120,8 +130,15 @@ const driversSlice = createSlice({
     },
     [getDriver.fulfilled]: (state, action) => {
       const driver = action.payload;
-      console.log('Driver data being inserted:', driver);
       driversAdapter.upsertOne(state, driver);
+    },
+    [completeTrip.fulfilled]: (state, action) => {
+      const { driverId, tripId } = action.payload;
+
+      const driver = state.entities[driverId];
+      if (driver) {
+        driver.trips = driver.trips.map(trip => (trip.id === tripId ? { ...trip, completed: true } : trip));
+      }
     }
   }
 });

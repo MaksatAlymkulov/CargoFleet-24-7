@@ -10,8 +10,8 @@ import Paper from '@material-ui/core/Paper';
 import { format } from 'date-fns';
 import Typography from '@material-ui/core/Typography';
 import { Box, Button, Checkbox } from '@material-ui/core';
-import { useSelector } from 'react-redux';
-import { selectDriverById } from './store/driversSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { completeTrip, selectDriverById } from './store/driversSlice';
 
 const StyledTableCell = withStyles(theme => ({
   head: {
@@ -25,26 +25,15 @@ const StyledTableCell = withStyles(theme => ({
     padding: '0 0 0 10px'
   }
 }))(TableCell);
-
-const StyledTableRow = withStyles(theme => ({
+const CustomCheckbox = withStyles({
   root: {
-    td: {
-      border: '1px solid lightgrey'
+    color: '#1c54b2',
+    '&$checked': {
+      color: '#1c54b2'
     }
-  }
-}))(TableRow);
-
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9)
-];
+  },
+  checked: {}
+})(props => <Checkbox color="default" {...props} />);
 
 const useStyles = makeStyles({
   table: {
@@ -55,11 +44,30 @@ const useStyles = makeStyles({
     boxSizing: 'border-box',
     width: 'calc(100% - 48px)',
     overflowX: 'auto'
+  },
+  typography: {
+    marginBottom: '30px'
+  },
+  paper: {
+    marginBottom: '30px'
+  },
+  paper1: {
+    display: 'flex',
+    justifyContent: 'flex-start',
+    padding: '24px',
+    marginBottom: '24px'
+  },
+  button: {
+    width: '180px',
+    marginLeft: '3rem',
+    borderRadius: '5px',
+    fontSize: '1.5rem'
   }
 });
 
 const DriverDetails = ({ id }) => {
   const classes = useStyles();
+  const dispatch = useDispatch();
   const driver = useSelector(state => selectDriverById(state, id));
   const loading = useSelector(state => state.driversApp.drivers.loading);
   const error = useSelector(state => state.driversApp.drivers.error);
@@ -75,25 +83,34 @@ const DriverDetails = ({ id }) => {
   if (!driver) {
     return <Typography>Driver not found.</Typography>;
   }
+  const driverInfo = [
+    { label: 'Email', value: driver.email },
+    { label: 'Phone number', value: driver.phone_number },
+    { label: 'Address Line 1', value: driver.address1 },
+    { label: 'Address Line 2', value: driver.address2 },
+    { label: 'City', value: driver.city },
+    { label: 'State', value: driver.state },
+    { label: 'Postal code', value: driver.postal_code },
+    { label: 'Country', value: driver.country }
+  ];
 
   return (
     <Box>
       <Typography variant="h4" gutterBottom>
         Driver Details
       </Typography>
-      <Paper square variant="outlined" style={{ display: 'flex', padding: '24px', marginBottom: '24px' }}>
-        <Box style={{ flex: 1 }}>
-          <Box mb={1}>
+      <Paper square variant="outlined" className={classes.paper1}>
+        <Box style={{ flex: '1', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+          <Box>
             <Typography variant="h4" gutterBottom>
               General Information
             </Typography>
-            <Typography style={{ fontSize: '1.5rem' }} variant="body1">
+            <Typography style={{ fontSize: '1.5rem' }} gutterBottom>
               <strong>Full name: </strong>
               {driver.first_name} {driver.last_name}
             </Typography>
-          </Box>
-          <Box>
-            <Typography style={{ fontSize: '1.5rem' }} variant="body1" gutterBottom>
+
+            <Typography style={{ fontSize: '1.5rem' }} gutterBottom>
               <strong>Date of birth:</strong> {driver.birth_date}
             </Typography>
           </Box>
@@ -101,41 +118,34 @@ const DriverDetails = ({ id }) => {
             <Typography variant="h4" gutterBottom>
               User Information
             </Typography>
-            <Typography style={{ fontSize: '1.5rem' }} variant="body1">
+
+            <Typography style={{ fontSize: '1.5rem' }} gutterBottom>
               <strong>License number:</strong> {driver.license_number}
             </Typography>
-          </Box>
-          <Box mb={1}>
-            <Typography style={{ fontSize: '1.5rem' }} variant="body1">
+            <Typography style={{ fontSize: '1.5rem' }} gutterBottom>
               <strong>License class:</strong> {driver.license_class}
             </Typography>
           </Box>
         </Box>
-        <Box style={{ display: 'flex', flexDirection: 'column' }}>
+        <Box style={{ flex: '1', display: 'flex', flexDirection: 'column' }}>
           <Typography variant="h4" gutterBottom>
             {' '}
             Contact Information
           </Typography>
-          <Box mb={1}>
-            <Typography>
-              <strong>Email</strong>
-            </Typography>
-          </Box>
+          {driverInfo.map(info => (
+            <Box mb={1} key={info.label}>
+              <Typography style={{ fontSize: '1.5rem' }}>
+                <strong>{info.label}: </strong>
+                <span>{info.value}</span>
+              </Typography>
+            </Box>
+          ))}
         </Box>
       </Paper>
-      <Paper square variant="outlined" sx={{ marginBottom: '24px' }} style={{ marginBottom: '24px' }}>
-        <Box style={{ display: 'flex', padding: '24px', alignContent: 'center' }}>
-          <Typography variant="h4" gutterBottom>
-            {' '}
-            Recent Trips
-          </Typography>
-          <Button
-            size="medium"
-            variant="contained"
-            color="inherit"
-            square
-            style={{ marginLeft: '24px', fontSize: '1.5rem' }}
-          >
+      <Paper square variant="outlined" className={classes.paper}>
+        <Box style={{ display: 'flex', padding: '24px', alignItems: 'center' }}>
+          <Typography variant="h4"> Recent Trips</Typography>
+          <Button size="small" variant="contained" color="inherit" className={classes.button}>
             Plan a trip
           </Button>
         </Box>
@@ -155,7 +165,7 @@ const DriverDetails = ({ id }) => {
               </TableHead>
               <TableBody>
                 {driver.trips.map(trip => (
-                  <StyledTableRow key={trip.id}>
+                  <TableRow key={trip.id}>
                     <StyledTableCell component="th" scope="row">
                       {trip.vehicle_id}
                     </StyledTableCell>
@@ -168,15 +178,19 @@ const DriverDetails = ({ id }) => {
                     <StyledTableCell align="left">{trip.distance}</StyledTableCell>
                     <StyledTableCell align="left">{trip.duration}</StyledTableCell>
                     <StyledTableCell align="left">
-                      <Checkbox checked={trip.completed} sx={{ color: 'blue', padding: '0' }} />
+                      <CustomCheckbox
+                        className={classes.checkbox}
+                        onChange={() => dispatch(completeTrip({ driverId: driver.id, tripId: trip.id }))}
+                        checked={trip.completed}
+                      />
                     </StyledTableCell>
-                  </StyledTableRow>
+                  </TableRow>
                 ))}
               </TableBody>
             </Table>
           </TableContainer>
         ) : (
-          <Typography variant="h6" align="center" color="textSecondary" sx={{ marginTop: 2 }}>
+          <Typography variant="h6" align="center" color="textSecondary" className={classes.typography}>
             This driver has no trips.
           </Typography>
         )}

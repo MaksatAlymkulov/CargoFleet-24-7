@@ -131,7 +131,6 @@ function DriversList(props) {
   const formattedData = formatData(filteredData);
 
   const handleRowClick = (event, row) => {
-    console.log('Row clicked:', row);
     if (!row || !row.original) {
       console.error('Row data is invalid:', row);
       return;
@@ -140,7 +139,6 @@ function DriversList(props) {
       return;
     }
     const driverId = row.original.id;
-    console.log('Navigating to:', `/apps/drivers/${driverId}`);
     history.push(`/apps/drivers/${driverId}`);
   };
 
