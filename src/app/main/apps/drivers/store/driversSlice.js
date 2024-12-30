@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk, createEntityAdapter } from '@reduxjs/toolkit';
 import axios from 'axios';
-
 const TOKEN = 'Zb84MzAROCrhmF6t';
 
 export const getDrivers = createAsyncThunk('driver-list-app/drivers/getDrivers', async (routeParams, { getState }) => {
@@ -14,6 +13,15 @@ export const getDrivers = createAsyncThunk('driver-list-app/drivers/getDrivers',
   const data = await response.data.data;
 
   return { data, routeParams };
+});
+
+export const getDriver = createAsyncThunk('driver-list-app/drivers/getDriver', async driverId => {
+  const response = await axios.get(`https://cargofleet-api.fly.dev/team1/api/drivers/${driverId}`, {
+    headers: {
+      Authorization: TOKEN
+    }
+  });
+  return response.data;
 });
 
 export const addDriver = createAsyncThunk('driversApp/drivers/addDriver', async driver => {
@@ -30,20 +38,23 @@ export const updateDriver = createAsyncThunk('driversApp/drivers/updateDriver', 
   return response.data;
 });
 
-export const removeDriver = createAsyncThunk(
-  'driversApp/drivers/removeDriver',
-  async (driverId, { rejectWithValue, dispatch }) => {
-    try {
-      await axios.delete(`https://cargofleet-api.fly.dev/team1/api/drivers/${driverId}`, {
-        headers: { Authorization: TOKEN }
-      });
-      return driverId;
-    } catch (error) {
-      return rejectWithValue(error.response?.data || 'An error occurred while deleting the driver.');
-    }
-  }
-);
+export const removeDriver = createAsyncThunk('driversApp/drivers/removeDriver', async driverId => {
+  await axios.delete(`https://cargofleet-api.fly.dev/team1/api/drivers/${driverId}`, {
+    headers: { Authorization: TOKEN }
+  });
+  return driverId;
+});
 
+export const completeTrip = createAsyncThunk('driversApp/drivers/removeDriver', async ({ driverId, tripId }) => {
+  await axios.patch(
+    `https://cargofleet-api.fly.dev/team1/api/drivers/${driverId}/trips/${tripId}/complete`,
+    {},
+    {
+      headers: { Authorization: TOKEN }
+    }
+  );
+  return { driverId, tripId };
+});
 const driversAdapter = createEntityAdapter({});
 
 export const { selectAll: selectDrivers, selectById: selectDriverById } = driversAdapter.getSelectors(
@@ -116,6 +127,18 @@ const driversSlice = createSlice({
       driversAdapter.setAll(state, data);
       state.routeParams = routeParams;
       state.searchText = '';
+    },
+    [getDriver.fulfilled]: (state, action) => {
+      const driver = action.payload;
+      driversAdapter.upsertOne(state, driver);
+    },
+    [completeTrip.fulfilled]: (state, action) => {
+      const { driverId, tripId } = action.payload;
+
+      const driver = state.entities[driverId];
+      if (driver) {
+        driver.trips = driver.trips.map(trip => (trip.id === tripId ? { ...trip, completed: true } : trip));
+      }
     }
   }
 });

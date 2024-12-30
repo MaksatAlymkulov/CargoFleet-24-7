@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { useHistory } from 'react-router';
 import FuseUtils from '@fuse/utils';
 import Typography from '@material-ui/core/Typography';
 import { useMemo, useEffect, useState, useCallback } from 'react';
@@ -15,6 +16,7 @@ const formatData = drivers =>
   });
 
 function DriversList(props) {
+  const history = useHistory();
   const dispatch = useDispatch();
   const drivers = useSelector(selectDrivers);
   const searchText = useSelector(({ driversApp }) => driversApp.drivers.searchText);
@@ -107,6 +109,8 @@ function DriversList(props) {
 
     if (drivers) {
       setFilteredData(getFilteredArray(drivers, searchText));
+    } else {
+      console.error('Drivers array is null or undefined');
     }
   }, [drivers, searchText]);
 
@@ -126,13 +130,25 @@ function DriversList(props) {
 
   const formattedData = formatData(filteredData);
 
+  const handleRowClick = (event, row) => {
+    if (!row || !row.original) {
+      console.error('Row data is invalid:', row);
+      return;
+    }
+    if (event.target.closest('button')) {
+      return;
+    }
+    const driverId = row.original.id;
+    history.push(`/apps/drivers/${driverId}`);
+  };
+
   return (
     <>
       <Button style={{ width: 200, backgroundColor: 'grey' }} onClick={() => dispatch(openNewDriverDialog())}>
         Add new
       </Button>
       <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1, transition: { delay: 0.2 } }}>
-        <DriversTable columns={columns} data={formattedData} />
+        <DriversTable columns={columns} data={formattedData} onRowClick={handleRowClick} />
       </motion.div>
       <Snackbar
         open={openSnackbar}
