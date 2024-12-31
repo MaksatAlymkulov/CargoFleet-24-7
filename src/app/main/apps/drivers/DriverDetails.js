@@ -11,7 +11,8 @@ import { format } from 'date-fns';
 import Typography from '@material-ui/core/Typography';
 import { Box, Button, Checkbox } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
-import { completeTrip, selectDriverById } from './store/driversSlice';
+import { completeTrip, selectDriverById, openNewDriverTripDialog } from './store/driversSlice';
+import DriverTripDialog from './DriverTripDialog';
 
 const StyledTableCell = withStyles(theme => ({
   head: {
@@ -145,7 +146,13 @@ const DriverDetails = ({ id }) => {
       <Paper square variant="outlined" className={classes.paper}>
         <Box style={{ display: 'flex', padding: '24px', alignItems: 'center' }}>
           <Typography variant="h4"> Recent Trips</Typography>
-          <Button size="small" variant="contained" color="inherit" className={classes.button}>
+          <Button
+            onClick={() => dispatch(openNewDriverTripDialog({ data: { driverId: id } }))}
+            size="small"
+            variant="contained"
+            color="inherit"
+            className={classes.button}
+          >
             Plan a trip
           </Button>
         </Box>
@@ -195,6 +202,13 @@ const DriverDetails = ({ id }) => {
           </Typography>
         )}
       </Paper>
+      <DriverTripDialog
+        key={driver.id}
+        vehicleIds={driver.trips.map(trip => trip.vehicle_id)}
+        driverFirstName={driver.first_name}
+        driverLastName={driver.last_name}
+        driverId={driver.id}
+      />
     </Box>
   );
 };
