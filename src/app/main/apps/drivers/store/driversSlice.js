@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, createEntityAdapter } from '@reduxjs/toolkit';
 import axios from 'axios';
+
 const TOKEN = 'Zb84MzAROCrhmF6t';
 
 export const getDrivers = createAsyncThunk('driver-list-app/drivers/getDrivers', async (routeParams, { getState }) => {
@@ -55,6 +56,12 @@ export const completeTrip = createAsyncThunk('driversApp/drivers/removeDriver', 
   );
   return { driverId, tripId };
 });
+export const addTrip = createAsyncThunk('driversApp/drivers/addTrip', async ({ driverId, tripData }) => {
+  const response = await axios.post(`https://cargofleet-api.fly.dev/team1/api/drivers/${driverId}/trips`, tripData, {
+    headers: { Authorization: TOKEN }
+  });
+  return response.data;
+});
 const driversAdapter = createEntityAdapter({});
 
 export const { selectAll: selectDrivers, selectById: selectDriverById } = driversAdapter.getSelectors(
@@ -68,6 +75,13 @@ const driversSlice = createSlice({
     routeParams: {},
     driverDialog: {
       type: 'new',
+      props: {
+        open: false
+      },
+      data: null
+    },
+    driverTripDialog: {
+      type: 'trip',
       props: {
         open: false
       },
@@ -116,6 +130,24 @@ const driversSlice = createSlice({
         },
         data: null
       };
+    },
+    openNewDriverTripDialog: (state, action) => {
+      state.driverTripDialog = {
+        type: 'trip',
+        props: {
+          open: true
+        },
+        data: action.payload?.data || null
+      };
+    },
+    closeNewDriverTripDialog: (state, action) => {
+      state.driverTripDialog = {
+        type: 'trip',
+        props: {
+          open: false
+        },
+        data: null
+      };
     }
   },
   extraReducers: {
@@ -139,6 +171,13 @@ const driversSlice = createSlice({
       if (driver) {
         driver.trips = driver.trips.map(trip => (trip.id === tripId ? { ...trip, completed: true } : trip));
       }
+    },
+    [addTrip.fulfilled]: (state, action) => {
+      const trip = action.payload;
+      const driver = state.entities[trip.driverId];
+      if (driver) {
+        driver.trips = [...(driver.trips || []), trip];
+      }
     }
   }
 });
@@ -148,7 +187,9 @@ export const {
   openNewDriverDialog,
   closeNewDriverDialog,
   openEditDriverDialog,
-  closeEditDriverDialog
+  closeEditDriverDialog,
+  closeNewDriverTripDialog,
+  openNewDriverTripDialog
 } = driversSlice.actions;
 
 export default driversSlice.reducer;
