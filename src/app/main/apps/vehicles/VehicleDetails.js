@@ -13,7 +13,7 @@ import {
 } from '@material-ui/core';
 import Icon from '@material-ui/core/Icon';
 import IconButton from '@material-ui/core/IconButton';
-import { format } from 'date-fns';
+import { format, isValid } from 'date-fns';
 import { useParams } from 'react-router';
 import Typography from '@material-ui/core/Typography';
 import { useDispatch, useSelector } from 'react-redux';
@@ -135,7 +135,12 @@ const VehicleDetails = () => {
                     {issue.description}
                   </TableCell>
                   <TableCell align="right">{issue.priority}</TableCell>
-                  <TableCell align="right">{format(new Date(issue.due_date), 'MMM d, yyyy')}</TableCell>
+                  <TableCell align="right">
+                    {' '}
+                    {issue.due_date && isValid(new Date(issue.due_date))
+                      ? format(new Date(issue.due_date), 'MMM d, yyyy')
+                      : 'No Due Date'}
+                  </TableCell>
                   <TableCell align="right">
                     <Checkbox color="primary" checked={issue.completed} onChange={() => handleComplete(issue)} />
                   </TableCell>

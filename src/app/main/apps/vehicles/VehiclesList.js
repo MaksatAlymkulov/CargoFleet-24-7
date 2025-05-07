@@ -87,7 +87,7 @@ function VehiclesList(props) {
       },
       {
         Header: 'Year',
-        accessor: row => row.manufacture_year.split('T')[0],
+        accessor: row => row.manufacture_year?.split('T')[0],
         sortable: true
       },
       {

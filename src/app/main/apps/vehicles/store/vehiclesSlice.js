@@ -44,7 +44,7 @@ export const updateVehicle = createAsyncThunk('vehiclesApp/vehicles/updateVehicl
 
 export const removeVehicle = createAsyncThunk(
   'vehiclesApp/vehicles/removeVehicle',
-  async (vehicleId, { rejectWithValue, dispatch }) => {
+  async (vehicleId, { rejectWithValue }) => {
     try {
       await axios.delete(`https://cargofleet-api.fly.dev/team1/api/vehicles/${vehicleId}`, {
         headers: { Authorization: TOKEN }
@@ -88,6 +88,19 @@ export const completeIssue = createAsyncThunk('vehiclesApp/vehicles/completeIssu
   console.log('issue', issue);
   const response = await axios.patch(
     `https://cargofleet-api.fly.dev/team1/api/vehicles/${issue.vehicle_id}/issues/${issue.id}/complete`,
+    {},
+    {
+      headers: { Authorization: TOKEN }
+    }
+  );
+  return { id: issue.id, response: response.data };
+});
+
+export const uncompleteIssue = createAsyncThunk('vehiclesApp/vehicles/uncompleteIssue', async issue => {
+  console.log('issue', issue);
+  const response = await axios.patch(
+    `https://cargofleet-api.fly.dev/team1/api/vehicles/${issue.vehicle_id}/issues/${issue.id}/uncomplete`,
+    {},
     {
       headers: { Authorization: TOKEN }
     }
@@ -251,7 +264,6 @@ const vehiclesSlice = createSlice({
   extraReducers: {
     [updateVehicle.fulfilled]: (state, action) => vehiclesAdapter.upsertOne(state, action.payload),
     [addVehicle.fulfilled]: vehiclesAdapter.addOne,
-    // [removeVehicles.fulfilled]: (state, action) => vehiclesAdapter.removeMany(state, action.payload),
     [removeVehicle.fulfilled]: (state, action) => vehiclesAdapter.removeOne(state, action.payload),
     [getVehicles.fulfilled]: (state, action) => {
       const { data, routeParams } = action.payload;
@@ -268,7 +280,8 @@ const vehiclesSlice = createSlice({
       vehiclesAdapter.upsertOne(state, action.payload);
     },
     [removeIssue.fulfilled]: (state, action) => vehiclesAdapter.removeOne(state, action.payload),
-    [completeIssue.fulfilled]: (state, action) => vehiclesAdapter.upsertOne(state, action.payload)
+    [completeIssue.fulfilled]: (state, action) => vehiclesAdapter.upsertOne(state, action.payload),
+    [uncompleteIssue.fulfilled]: (state, action) => vehiclesAdapter.upsertOne(state, action.payload)
   }
 });
 
