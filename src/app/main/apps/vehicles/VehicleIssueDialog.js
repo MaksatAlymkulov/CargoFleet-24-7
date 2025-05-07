@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import _ from '@lodash';
 import * as yup from 'yup';
 
-import { addIssue, closeNewVehicleIssueDialog, getVehicle } from './store/vehiclesSlice';
+import { addIssue, closeNewVehicleIssueDialog, getVehicle, getVehicles } from './store/vehiclesSlice';
 
 /**
  * Form Validation Schema
@@ -78,6 +78,7 @@ function VehicleIssueDialog({ id }) {
     try {
       await dispatch(addIssue(data));
       dispatch(getVehicle(data.vehicleId));
+      dispatch(getVehicles());
       closeComposeDialog();
     } catch (error) {
       console.error('Failed to add issue', error);
